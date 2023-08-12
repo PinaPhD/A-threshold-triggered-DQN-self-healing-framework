@@ -1,11 +1,11 @@
-# !/usr/bin/python
+#!/usr/bin/python
 
 from mininet.net import Mininet
 from mininet.node import Node, Controller, OVSSwitch, OVSKernelSwitch, Host
 from mininet.cli import CLI
 from mininet.link import Intf, TCLink
 from mininet.log import setLogLevel, info
-from mininet.node import Node, CPULimitedHost
+from mininet.node import Node, CPULimitedHost, LinuxRouter
 from mininet.util import irange, dumpNodeConnections
 from mininet.topo import Topo
 import time
@@ -26,9 +26,9 @@ class AWF_digital_substation_network(Topo):
 		fd7 = self.addSwitch('FD7')
 		fd8 = self.addSwitch('FD8')
 		fd9 = self.addSwitch('FD9')
-		#RG1 = self.addHost('Gateway',cls=LinuxRouter, ip='10.3.4.1/16')
-		#RG2 = self.addHost('ISP',cls=LinuxRouter,ip='10.2.4.1/16')
-		#RG3 = self.addHost('ENTERPRISE-selfWORK',cls=LinuxRouter,ip='10.2.4.2/16')
+		RG1 = self.addHost('Gateway',cls=LinuxRouter, ip='10.3.4.1/16')
+		RG2 = self.addHost('ISP',cls=LinuxRouter,ip='10.2.4.1/16')
+		RG3 = self.addHost('ENTERPRISE-selfWORK',cls=LinuxRouter,ip='10.2.4.2/16')
 
 		"""
 		Defining the merging units (MUs) and protection,fault equipment
@@ -68,10 +68,11 @@ class AWF_digital_substation_network(Topo):
 
 		#Part 1: The IT/OT links between routers and distribution level FDs
 		info('Linking the OT Gateway to the ISP and Enterprise selfwork (IT) ... \n\n')
-		#self.addLink(RG1,RG2,bw=2000, delay = '0.01ms',intfName1='RG1RG2-eth1')   #Linking gateway to ISP router on a 2gbps optical fiber link
-		#self.addLink(RG2,RG3,bw=1500, delay = '0.01ms',intfName1='RG2RG3-eth1')   #Linking ISP to Enterprise selfwork router on a 2gbps optical fiber link
-
-		#Part 2: The Distribution layer FD links
+		self.addLink(RG1,RG2,bw=20, delay = '0.01ms')   #Linking gateway to ISP router on a 2gbps optical fiber link
+		self.addLink(RG2,RG3,bw=15, delay = '0.01ms')   #Linking ISP to Enterprise selfwork router on a 2gbps optical fiber link
+        self.addLink(fd9,RG1) #Linking the OT network to the Internet (via a RG1 gateway)
+        
+        #Part 2: The Distribution layer FD links
 		info('Linking the distribution layer forwarding devices ... \n\n')
 		self.addLink(fd4,fd3)    #LC-LC fiber patch cords at 1Gbps duplex (ODS)
 		self.addLink(fd4,fd5)   #A single model subsea optical fiber cable on 2gbps
@@ -113,6 +114,5 @@ class AWF_digital_substation_network(Topo):
 		self.addLink(fd9,fr1)
 		self.addLink(fd9,rtu)
 		self.addLink(fd9,fr2)
-
 
 topos = {'awfnet': AWF_digital_substation_network}
