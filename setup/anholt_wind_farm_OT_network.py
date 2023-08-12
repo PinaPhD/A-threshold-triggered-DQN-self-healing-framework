@@ -5,7 +5,7 @@ from mininet.node import Node, Controller, OVSSwitch, OVSKernelSwitch, Host
 from mininet.cli import CLI
 from mininet.link import Intf, TCLink
 from mininet.log import setLogLevel, info
-from mininet.node import Node, CPULimitedHost, LinuxRouter
+from mininet.node import Node, CPULimitedHost
 from mininet.util import irange, dumpNodeConnections
 from mininet.topo import Topo
 import time
