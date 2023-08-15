@@ -12,6 +12,8 @@ mosquitto_sub -h localhost -t topic_name   #To subscribe
  
 #Check whether mosquitto is running
 sudo systemctl status mosquitto.service
+sudo systemctl status mosquitto
+
 
 
 
