@@ -1,4 +1,4 @@
-Installing ONOS SDN Controller
+# Installing ONOS SDN Controller
 
 * Start the Azure VM-SDNC on the resource group (RG-ORSTED-ESR1)
 * Connect via Bastion or RDP
@@ -11,7 +11,7 @@ Installing ONOS SDN Controller
 * $ git checkout 2.3.1b4
 * $ ./install.sh -a
 
-Install openjdk-8-jdk
+# Install openjdk-8-jdk
 * $ sudo apt install openjdk-8-jdk
 
 * Append environment variable JAVA_HOME to ~/.bashrc
@@ -23,19 +23,19 @@ Install openjdk-8-jdk
 * $ source ~/.bashrc
 * Install onos 2.0.0
   
-Download onos binary file:
+# Download onos binary file:
 * $ sudo wget -c https://repo1.maven.org/maven2/org/on...
 * $ tar zxvf onos-2.0.0.tar.gz
 
-Copy files in folder to /opt/onos
+# Copy files in folder to /opt/onos
 * $ sudo mkdir /opt/onos 
 * $ sudo cp -r onos-2.0.0/* /opt/onos
 
-Run onos services 
+# Run onos services 
 * $ cd /opt/onos/bin
 * $ sudo /opt/onos/bin/onos-service start
 
-Open another terminal
+# Open another terminal
 * Add configuration to ~/.ssh/config
 * $ mkdir ~/.ssh
 * $ touch ~/.ssh/config
@@ -43,7 +43,7 @@ Open another terminal
 - HostKeyAlgorithms +ssh-rsa
 - PubkeyAcceptedKeyTypes +ssh-rsa
 
-Connect to onos cli and activate application
+# Connect to onos cli and activate application
 * $ /opt/onos/bin/onos -l onos
 * password: rocks
 
@@ -51,15 +51,15 @@ Connect to onos cli and activate application
 * onos@root$ app activate org.onosproject.fwd
 * onos@root$ app activate org.onosproject.openflow
 
-Login GUI
+# Login GUI
 * Open browser and type
 * localhost:8181/onos/ui
 
 * username: onos
 * password: rocks
 
-Run Mininet And PingAll
+# Run Mininet And PingAll
 * $ sudo mn --controller remote,ip='your-ip' --switch ovs,protocols=OpenFlow13
 * mininet $ pingall
 
-If no host icon present on onos gui, press 'h'
+# If no host icon present on onos gui, press 'h'
