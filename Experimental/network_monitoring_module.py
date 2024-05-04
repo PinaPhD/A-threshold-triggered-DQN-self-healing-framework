@@ -4,7 +4,7 @@ from requests.auth import HTTPBasicAuth
 from redis import Redis
 
 # Configuration
-onos_ip = '192.168.56.101'  # ONOS controller IP
+onos_ip = '192.168.0.5'  # ONOS controller IP
 auth_details = HTTPBasicAuth('onos', 'rocks')  # ONOS credentials
 base_url = f'http://{onos_ip}:8181/onos/v1'
 redis_host = 'localhost'  # Redis server IP
