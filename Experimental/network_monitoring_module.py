@@ -1,3 +1,12 @@
+'''
+
+@Author: Agrippina Mwangi
+@Funding: InnoCyPES Project EU H2020 ITN
+@Task: Secure self-healing module for software-defined Industrial OT Networks in extreme environments.
+@Created in May 2024 (Orsted, Denmark)
+
+'''
+
 import requests
 import prettytable as pt
 from requests.auth import HTTPBasicAuth
