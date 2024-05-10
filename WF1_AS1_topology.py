@@ -59,10 +59,22 @@ class MyTopo( Topo ):
         sp3 = self.addSwitch('SP3')
         
         #Leaf Switches (fs)
-        sw = {}                        #Leaf Switch
-        for i in range(1,17):
-            switch_name = f'LS{i}'
-            sw[f'fs{i}'] = self.addSwitch(switch_name)
+        fs1 = self.addSwitch('fs1')
+        fs2 = self.addSwitch('fs2')
+        fs3 = self.addSwitch('fs3')
+        fs4 = self.addSwitch('fs4')
+        fs5 = self.addSwitch('fs5')
+        fs6 = self.addSwitch('fs6')
+        fs7 = self.addSwitch('fs7')
+        fs8 = self.addSwitch('fs8')
+        fs9 = self.addSwitch('fs9')
+        fs10 = self.addSwitch('fs10')
+        fs11 = self.addSwitch('fs11')
+        fs12 = self.addSwitch('fs12')
+        fs13 = self.addSwitch('fs13')
+        fs14 = self.addSwitch('fs14')
+        fs15 = self.addSwitch('fs15')
+        fs16 = self.addSwitch('fs16')
             
         #Linking the devices  
         #LDAQ connects to the WT Access Network
