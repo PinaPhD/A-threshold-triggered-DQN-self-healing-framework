@@ -1,3 +1,4 @@
+
 """
 Designing the offshore wind farm network topology using the spine-leaf network topology
 Author: Agrippina W. Mwangi
@@ -5,8 +6,17 @@ Created on: April 2024
 """
 
 from mininet.topo import Topo
+from mininet.node import OVSSwitch
+
 
 class MyTopo(Topo):
+    
+    # Create a constructor to launch STP that prevents network loops due to the spine-leaf mesh connections
+    def __init__(self):
+	Topo.__init__(self,switch=OVSSwitch, stp=True)
+	self.build()
+
+
     # Creating the WF1_AS1 Network Topology
     def build(self):
         '''
@@ -56,10 +66,17 @@ class MyTopo(Topo):
         wt4_sw2 = self.addSwitch('WT4_SW2')
         wt5_sw1 = self.addSwitch('WT5_SW1')
         wt5_sw2 = self.addSwitch('WT5_SW2')
+        
+        #Connecting the local data acquisition nodes to the wind turbine nacelle access switches
+        self.addLink(ldaqwt1,wt1_sw1)
+        self.addLink(ldaqwt2,wt2_sw1)
+        self.addLink(ldaqwt3,wt3_sw1)
+        self.addLink(ldaqwt4,wt4_sw1)
+        self.addLink(ldaqwt5,wt5_sw1)
 
         # Creating spine-leaf network topology
-        spine_switches = [self.addSwitch(f's{i}') for i in range(1, 5)]
-        leaf_switches = [self.addSwitch(f'l{i}') for i in range(1, 21)]
+        spine_switches = [self.addSwitch(f's{i}', cls=OVSSwitch, stp=True) for i in range(1, 5)]
+        leaf_switches = [self.addSwitch(f'l{i}', cls=OVSSwitch, stp=True) for i in range(1, 21)]
 
         # Creating mesh connections between spine switches
         for i in range(len(spine_switches)):
