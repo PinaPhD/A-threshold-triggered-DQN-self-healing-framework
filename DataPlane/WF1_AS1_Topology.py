@@ -9,6 +9,7 @@ from mininet.topo import Topo
 class MyTopo( Topo ):
     #Creating the WF1_AS1 Network Topology
     def build( self ):
+    
         '''
         Key: 
 			1. LDAQ- Local Data acquisition, 
@@ -16,6 +17,7 @@ class MyTopo( Topo ):
 			3. ECP - Edge Computing node, 
 			4. vIED - virtual Intelligent Electronic Device
         '''
+        
         #Creating hosts
         ldaqwt1 = self.addHost('LDAQWT1', ip='192.168.1.10/24', defaultRoute='via 192.168.1.1')
         ldaqwt2 = self.addHost('LDAQWT2', ip='192.168.1.11/24', defaultRoute='via 192.168.1.1')
@@ -45,7 +47,7 @@ class MyTopo( Topo ):
         '''
 		Creating the WT Nacelle and Tower switches, Spine and Leaf Switches
         '''
-		
+        
         wt1_sw1 = self.addSwitch('WT1_SW1')    # Nacelle Switch
 		wt1_sw2 = self.addSwitch('WT1_SW2')    # Tower Switch
 		wt2_sw1 = self.addSwitch('WT2_SW1')
