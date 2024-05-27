@@ -65,3 +65,16 @@ $ sudo mn --controller remote,ip='your-ip' --switch ovs,protocols=OpenFlow13
 mininet $ pingall
 
 If no host icon present on onos gui, press 'h'
+
+
+#Installing Ubuntu Desktop on the Ubuntu Azure VM
+* sudo DEBIAN_FRONTEND=noneinteractive apt-get -y install xfce4
+* sudo apt install xfce4-session
+* sudo apt-get -y install xrdp
+* sudo systemctl enable xrdp
+* sudo adduser xrdp ssl-cert
+* echo xfce4-session >~/.xsession
+* sudo service xrdp restart
+* sudo passwd amwangi254 
+
+--- Here the password used was (8998)
