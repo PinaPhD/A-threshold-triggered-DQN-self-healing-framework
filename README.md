@@ -1,7 +1,11 @@
 ---
 A secure self-healing module for software-defined industrial OT networks in extreme environments 
 ---
+
+
 Self-healing involves the communication network's ability to detect and remediate issues autonomously, reducing the reliance on manual interventions. This is achieved using ML algorithms and automation to predict, detect, and respond to operational issues. Self-healing can either be data-based or event-based. We anticipate that adopting a self-healing framework in the software-defined industrial OT networks will improve SLAs and uptime, allowing Network Engineers to focus on developing solutions that drive business value and facilitate digital transformation without spending a significant portion of their time on manual tasks. Implementing a self-healing framework needs a mind shift from reactive to proactive approaches.
+
+
 ---
 Pre-requisites
 ---
