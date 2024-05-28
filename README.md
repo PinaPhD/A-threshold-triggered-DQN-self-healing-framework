@@ -1,7 +1,7 @@
 ---
 DDPG Resilience Model 
 ---
-A deep deterministic policy gradient resilience model for software-defined OT networks in cyber-physical energy systems
+A secure self-healing module for software-defined industrial OT networks in extreme environments
 
 ---
 Pre-requisites
