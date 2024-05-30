@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "skyblue", "id": "of:000000000000000c", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:000000000000000d", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:000000000000000a", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:000000000000000b", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:000000000000000e", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:000000000000000f", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:0000000000000010", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:0000000000000011", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:0000000000000003", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:0000000000000014", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:0000000000000004", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:0000000000000015", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:0000000000000001", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:0000000000000012", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:0000000000000002", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:0000000000000013", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:0000000000000007", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:0000000000000008", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:0000000000000005", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:0000000000000006", "label": "SWITCH", "shape": "dot"}, {"color": "skyblue", "id": "of:0000000000000009", "label": "SWITCH", "shape": "dot"}, {"color": "black", "id": "06:D3:A9:41:F8:81/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "12:B2:C2:96:00:2C/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "4E:7A:56:8C:90:A4/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "F2:AF:AB:91:0C:BD/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "6A:0C:8A:87:77:48/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "F2:F0:D5:09:2E:B2/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "5A:1F:F0:A3:60:4A/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "A6:50:FF:C0:E6:AF/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "F2:4F:3C:36:66:12/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "9E:5C:68:B7:D2:1C/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "1E:9C:3F:3B:8E:6B/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "AA:64:FD:BD:5C:F2/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "0A:03:F1:2F:D9:C9/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "0E:A8:FD:B9:A6:F9/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "56:A6:98:6A:31:B6/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "1E:77:AE:8D:7B:1E/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "6A:9D:8A:05:3B:7A/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "62:45:1D:5D:C7:8B/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "62:75:DF:71:EF:21/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "AE:8A:C2:F1:54:DC/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "CA:5C:6B:D6:BC:92/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "26:F0:33:B9:7B:53/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "B6:AF:C3:87:5B:52/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "DA:07:59:B8:B3:6B/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "66:86:F7:18:25:FB/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "AA:86:D2:28:93:C1/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "D6:11:58:AC:3F:79/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "16:5F:7D:46:EE:8E/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "EE:4D:FA:D0:1E:D5/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "72:80:32:65:9A:4C/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "1E:BC:9F:4B:98:84/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "76:E0:21:8C:E7:6E/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "A2:6E:84:A0:7C:B4/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "4E:C6:33:BC:75:99/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "86:30:32:7D:6E:CF/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "36:04:C3:77:BE:12/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "AE:EE:98:89:90:F5/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "46:0E:AD:EA:BC:96/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "6A:1D:A3:9B:6B:57/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "BE:F3:5A:A9:F3:D9/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "06:49:CF:CB:3A:F5/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "42:B8:77:02:26:52/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "4E:32:4A:65:49:9F/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "8E:F5:D4:CD:F7:74/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "A6:FF:E1:B7:10:98/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "E2:19:C3:EB:77:75/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "9A:14:3F:53:EA:DD/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "BE:99:AF:8D:3B:B1/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "B2:AF:35:7A:F4:32/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "4A:50:4A:0C:74:75/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "16:78:E1:F5:D4:8E/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "BE:75:A7:BC:5A:F1/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "0E:06:16:4F:2C:E2/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "D6:DF:48:FC:D9:C4/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "E2:2A:61:B1:1C:E6/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "CE:71:C3:44:26:4C/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "A6:66:0C:40:25:AE/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "96:C9:C9:FB:14:C5/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "4A:E8:2E:CD:CF:02/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "BA:3C:00:72:3C:C8/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "42:C4:C9:58:DD:50/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "56:F9:77:ED:D0:CA/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "0E:6C:28:3D:3A:2E/None", "label": "Host", "shape": "dot"}, {"color": "black", "id": "8E:B5:A8:9B:EA:36/None", "label": "Host", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"color": "gray", "from": "06:D3:A9:41:F8:81/None", "to": "of:0000000000000006"}, {"color": "gray", "from": "12:B2:C2:96:00:2C/None", "to": "of:0000000000000012"}, {"color": "gray", "from": "4E:7A:56:8C:90:A4/None", "to": "of:0000000000000004"}, {"color": "gray", "from": "F2:AF:AB:91:0C:BD/None", "to": "of:000000000000000a"}, {"color": "gray", "from": "6A:0C:8A:87:77:48/None", "to": "of:000000000000000e"}, {"color": "gray", "from": "F2:F0:D5:09:2E:B2/None", "to": "of:0000000000000009"}, {"color": "gray", "from": "5A:1F:F0:A3:60:4A/None", "to": "of:0000000000000010"}, {"color": "gray", "from": "A6:50:FF:C0:E6:AF/None", "to": "of:0000000000000012"}, {"color": "gray", "from": "F2:4F:3C:36:66:12/None", "to": "of:0000000000000005"}, {"color": "gray", "from": "9E:5C:68:B7:D2:1C/None", "to": "of:000000000000000b"}, {"color": "gray", "from": "1E:9C:3F:3B:8E:6B/None", "to": "of:000000000000000b"}, {"color": "gray", "from": "AA:64:FD:BD:5C:F2/None", "to": "of:0000000000000004"}, {"color": "gray", "from": "0A:03:F1:2F:D9:C9/None", "to": "of:000000000000000b"}, {"color": "gray", "from": "0E:A8:FD:B9:A6:F9/None", "to": "of:0000000000000003"}, {"color": "gray", "from": "56:A6:98:6A:31:B6/None", "to": "of:0000000000000015"}, {"color": "gray", "from": "1E:77:AE:8D:7B:1E/None", "to": "of:0000000000000004"}, {"color": "gray", "from": "6A:9D:8A:05:3B:7A/None", "to": "of:000000000000000d"}, {"color": "gray", "from": "62:45:1D:5D:C7:8B/None", "to": "of:0000000000000012"}, {"color": "gray", "from": "62:75:DF:71:EF:21/None", "to": "of:0000000000000012"}, {"color": "gray", "from": "AE:8A:C2:F1:54:DC/None", "to": "of:0000000000000015"}, {"color": "gray", "from": "CA:5C:6B:D6:BC:92/None", "to": "of:0000000000000014"}, {"color": "gray", "from": "26:F0:33:B9:7B:53/None", "to": "of:000000000000000a"}, {"color": "gray", "from": "B6:AF:C3:87:5B:52/None", "to": "of:0000000000000014"}, {"color": "gray", "from": "DA:07:59:B8:B3:6B/None", "to": "of:0000000000000005"}, {"color": "gray", "from": "66:86:F7:18:25:FB/None", "to": "of:0000000000000008"}, {"color": "gray", "from": "AA:86:D2:28:93:C1/None", "to": "of:0000000000000014"}, {"color": "gray", "from": "D6:11:58:AC:3F:79/None", "to": "of:000000000000000f"}, {"color": "gray", "from": "16:5F:7D:46:EE:8E/None", "to": "of:0000000000000009"}, {"color": "gray", "from": "EE:4D:FA:D0:1E:D5/None", "to": "of:0000000000000010"}, {"color": "gray", "from": "72:80:32:65:9A:4C/None", "to": "of:0000000000000015"}, {"color": "gray", "from": "1E:BC:9F:4B:98:84/None", "to": "of:0000000000000009"}, {"color": "gray", "from": "76:E0:21:8C:E7:6E/None", "to": "of:0000000000000008"}, {"color": "gray", "from": "A2:6E:84:A0:7C:B4/None", "to": "of:0000000000000006"}, {"color": "gray", "from": "4E:C6:33:BC:75:99/None", "to": "of:000000000000000e"}, {"color": "gray", "from": "86:30:32:7D:6E:CF/None", "to": "of:000000000000000f"}, {"color": "gray", "from": "36:04:C3:77:BE:12/None", "to": "of:0000000000000006"}, {"color": "gray", "from": "AE:EE:98:89:90:F5/None", "to": "of:0000000000000004"}, {"color": "gray", "from": "46:0E:AD:EA:BC:96/None", "to": "of:0000000000000009"}, {"color": "gray", "from": "6A:1D:A3:9B:6B:57/None", "to": "of:0000000000000013"}, {"color": "gray", "from": "BE:F3:5A:A9:F3:D9/None", "to": "of:0000000000000010"}, {"color": "gray", "from": "06:49:CF:CB:3A:F5/None", "to": "of:0000000000000013"}, {"color": "gray", "from": "42:B8:77:02:26:52/None", "to": "of:0000000000000008"}, {"color": "gray", "from": "4E:32:4A:65:49:9F/None", "to": "of:000000000000000e"}, {"color": "gray", "from": "8E:F5:D4:CD:F7:74/None", "to": "of:0000000000000010"}, {"color": "gray", "from": "A6:FF:E1:B7:10:98/None", "to": "of:000000000000000f"}, {"color": "gray", "from": "E2:19:C3:EB:77:75/None", "to": "of:0000000000000003"}, {"color": "gray", "from": "9A:14:3F:53:EA:DD/None", "to": "of:0000000000000005"}, {"color": "gray", "from": "BE:99:AF:8D:3B:B1/None", "to": "of:000000000000000e"}, {"color": "gray", "from": "B2:AF:35:7A:F4:32/None", "to": "of:0000000000000003"}, {"color": "gray", "from": "4A:50:4A:0C:74:75/None", "to": "of:0000000000000013"}, {"color": "gray", "from": "16:78:E1:F5:D4:8E/None", "to": "of:0000000000000008"}, {"color": "gray", "from": "BE:75:A7:BC:5A:F1/None", "to": "of:000000000000000a"}, {"color": "gray", "from": "0E:06:16:4F:2C:E2/None", "to": "of:000000000000000d"}, {"color": "gray", "from": "D6:DF:48:FC:D9:C4/None", "to": "of:000000000000000d"}, {"color": "gray", "from": "E2:2A:61:B1:1C:E6/None", "to": "of:000000000000000a"}, {"color": "gray", "from": "CE:71:C3:44:26:4C/None", "to": "of:0000000000000005"}, {"color": "gray", "from": "A6:66:0C:40:25:AE/None", "to": "of:0000000000000013"}, {"color": "gray", "from": "96:C9:C9:FB:14:C5/None", "to": "of:0000000000000015"}, {"color": "gray", "from": "4A:E8:2E:CD:CF:02/None", "to": "of:0000000000000014"}, {"color": "gray", "from": "BA:3C:00:72:3C:C8/None", "to": "of:0000000000000006"}, {"color": "gray", "from": "42:C4:C9:58:DD:50/None", "to": "of:000000000000000d"}, {"color": "gray", "from": "56:F9:77:ED:D0:CA/None", "to": "of:0000000000000003"}, {"color": "gray", "from": "0E:6C:28:3D:3A:2E/None", "to": "of:000000000000000f"}, {"color": "gray", "from": "8E:B5:A8:9B:EA:36/None", "to": "of:000000000000000b"}, {"color": "blue", "from": "of:0000000000000002", "to": "of:0000000000000006"}, {"color": "blue", "from": "of:0000000000000008", "to": "of:0000000000000007"}, {"color": "blue", "from": "of:0000000000000002", "to": "of:0000000000000001"}, {"color": "blue", "from": "of:000000000000000d", "to": "of:000000000000000c"}, {"color": "blue", "from": "of:0000000000000011", "to": "of:0000000000000015"}, {"color": "blue", "from": "of:000000000000000c", "to": "of:0000000000000010"}, {"color": "blue", "from": "of:000000000000000c", "to": "of:0000000000000001"}, {"color": "blue", "from": "of:000000000000000b", "to": "of:0000000000000007"}, {"color": "blue", "from": "of:000000000000000a", "to": "of:0000000000000007"}, {"color": "blue", "from": "of:0000000000000005", "to": "of:0000000000000002"}, {"color": "blue", "from": "of:0000000000000007", "to": "of:0000000000000009"}, {"color": "blue", "from": "of:000000000000000c", "to": "of:000000000000000e"}, {"color": "blue", "from": "of:0000000000000001", "to": "of:0000000000000011"}, {"color": "blue", "from": "of:0000000000000014", "to": "of:0000000000000011"}, {"color": "blue", "from": "of:0000000000000004", "to": "of:0000000000000002"}, {"color": "blue", "from": "of:0000000000000013", "to": "of:0000000000000011"}, {"color": "blue", "from": "of:000000000000000c", "to": "of:000000000000000f"}, {"color": "blue", "from": "of:0000000000000003", "to": "of:0000000000000002"}, {"color": "blue", "from": "of:0000000000000001", "to": "of:0000000000000007"}, {"color": "blue", "from": "of:0000000000000012", "to": "of:0000000000000011"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"barnesHut": {"gravitationalConstant": -8000, "centralGravity": 0.3, "springLength": 100, "springConstant": 0.04, "damping": 0.09, "avoidOverlap": 0.1}}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
