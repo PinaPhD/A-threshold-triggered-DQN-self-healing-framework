@@ -6,7 +6,7 @@ Installation Project Guide
 
 
 ##### Step 1: Infrastructure Layer Design
-- Create a Virtual Machine(VM) on the Microsoft Azure Resource Group and assign it a virtual network and security group
+- Create a Virtual Machine (VM) on the Microsoft Azure Resource Group and assign it a virtual network and security group
 - In the VM, install Ubuntu 22.04 x64 Gen2 Operating System and run the following commands:
 
 ``` bash
