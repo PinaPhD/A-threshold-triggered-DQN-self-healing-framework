@@ -10,9 +10,11 @@ Installation Project Guide
 - In the VM, install Ubuntu 22.04 x64 Gen2 Operating System and run the following commands:
 
   ```bash
- sudo apt-get -y update && sudo apt-get -y upgrade
- sudo apt-get -y install wireshark wget curl vim nano 
- git clone https://github.com/mininet/mininet 
- mininet/util/install.sh -w
+  
+ - sudo apt-get -y update && sudo apt-get -y upgrade
+ - sudo apt-get -y install wireshark wget curl vim nano 
+ - git clone https://github.com/mininet/mininet 
+ - mininet/util/install.sh -w
+   
   ```
   
