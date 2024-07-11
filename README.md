@@ -53,6 +53,7 @@ sudo -E wireshark
 ```bash
 sudo apt-get -y update && sudo apt-get -y upgrade
 sudo apt install git wget vim
+sudo apt -y install openjdk-8-jdk
 ```
 
 Append environment variable JAVA_HOME to ~/.bashrc 
@@ -62,6 +63,8 @@ export JRE_HOME=$JAVA_HOME/jre
 export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib
 export PATH=$JAVA_HOME/bin:$PATH
 ```
+
+Run this: `source ~/.bashrc`
 
 Installing ONOS Ver2.0.0 (_Loon_)
 
