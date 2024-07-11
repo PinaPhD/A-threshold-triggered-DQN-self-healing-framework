@@ -64,7 +64,7 @@ export PATH=$JAVA_HOME/bin:$PATH
 ```
 
 ---
-REFERENCE SECTION
+Reference Section
 ---
 
 #### See more studies from us and cite our work:
