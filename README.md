@@ -58,4 +58,30 @@ export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib
 export PATH=$JAVA_HOME/bin:$PATH
 ```
 
-- 
+### See more studies from us and cite our work:
+
+1. Mwangi, A., Sundsgaard, K., Vilaplana, J. A. L., Vilerá, K. V., & Yang, G. (2023, June). A system-based framework for optimal sensor placement in smart grids. In 2023 IEEE Belgrade PowerTech (pp. 1-6). IEEE.
+```bash
+@inproceedings{mwangi2023system,
+  title={A system-based framework for optimal sensor placement in smart grids},
+  author={Mwangi, Agrippina and Sundsgaard, Konrad and Vilaplana, Jose Angel Leiva and Viler{\'a}, Kaio Vin{\'\i}cius and Yang, Guangya},
+  booktitle={2023 IEEE Belgrade PowerTech},
+  pages={1--6},
+  year={2023},
+  organization={IEEE}
+}
+```
+
+2. Mwangi, A., Sahay, R., Fumagalli, E., Gryning, M., & Gibescu, M. (2024). Towards a Software-Defined Industrial IoT-Edge Network for Next-Generation Offshore Wind Farms: State of the Art, Resilience, and Self-X Network and Service Management. Energies, 17(12), 2897.
+```bash
+@article{mwangi2024towards,
+  title={Towards a Software-Defined Industrial IoT-Edge Network for Next-Generation Offshore Wind Farms: State of the Art, Resilience, and Self-X Network and Service Management},
+  author={Mwangi, Agrippina and Sahay, Rishikesh and Fumagalli, Elena and Gryning, Mikkel and Gibescu, Madeleine},
+  journal={Energies},
+  volume={17},
+  number={12},
+  pages={2897},
+  year={2024},
+  publisher={MDPI}
+}
+```
