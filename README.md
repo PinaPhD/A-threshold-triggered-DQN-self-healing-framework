@@ -37,6 +37,7 @@ sudo ./util/install.sh -a
 
 Running the offshore WPP Network Topology [AS1 Network Topology](https://github.com/PinaPhD/JP3/blob/main/DataPlane/dataplane.py)
 
+In the Mininet CLI prompt, using xterm instantiate the data transfers between all the communicating nodes (IIoT sensors, Merging Units, vIEDs, ECP units, and actuators)
 Running Wireshark:
 
 ```bash
