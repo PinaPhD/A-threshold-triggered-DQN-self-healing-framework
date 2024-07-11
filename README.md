@@ -9,9 +9,9 @@ This agent detects traffic anomalies, learns optimal paths, and places rules in 
 
 
 
----
-Setting up Ms-Azure Resource Group Proof-of-Concept Testbed
----
+
+##### Setting up Ms-Azure Resource Group Proof-of-Concept Testbed
+
 
 Data plane virtual machine (VM) setup on the Ms-Azure Resource Group:
 - sudo apt-get update && sudo apt-get upgrade
@@ -24,13 +24,23 @@ Data plane virtual machine (VM) setup on the Ms-Azure Resource Group:
 - sudo ufw allow 3389/tcp
 - sudo passwd amwangi254
 
-Installing Mininet on the Ubuntu Desktop (GUI) version:
+##### Installing Mininet on the Ubuntu Desktop (GUI) version:
 - sudo apt install git python3-pip -y
 - git clone https://github.com/mininet/mininet
 - cd mininet
 - sudo ./util/install.sh -a
 
-Running the offshore WPP Network Topology [Mininet Topology](https://github.com/PinaPhD/JP3/blob/main/DataPlane/dataplane.py)
+Running the offshore WPP Network Topology [AS1 Network Topology](https://github.com/PinaPhD/JP3/blob/main/DataPlane/dataplane.py)
 
+##### Setting up the ONOS SDN Controller Cluster:
+- sudo apt-get -y update && sudo apt-get -y upgrade
+- sudo apt install git wget vim
+- Append environment variable JAVA_HOME to ~/.bashrc
+- 
+```bash
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export JRE_HOME=$JAVA_HOME/jre
+export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib
+export PATH=$JAVA_HOME/bin:$PATH
 
 
