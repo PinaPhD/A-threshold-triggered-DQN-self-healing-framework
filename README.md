@@ -63,6 +63,10 @@ export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib
 export PATH=$JAVA_HOME/bin:$PATH
 ```
 
+Installing ONOS Ver2.0.0 (_Loon_)
+
+Download the onos binary file:  `sudo wget -c https://repo1.maven.org/maven2/org/onosproject/onos-releases/2.0.0/onos-2.0.0.tar.gz`
+
 ---
 Reference Section
 ---
