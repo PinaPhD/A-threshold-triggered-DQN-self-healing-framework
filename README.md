@@ -10,10 +10,10 @@ This agent detects traffic anomalies, learns optimal paths, and places rules in 
 
 
 ---
-Pre-requisites
+Setting up Ms-Azure Resource Group Proof-of-Concept Testbed
 ---
 
-Installation:
+Data Plane Virtual Machine (VM) Setup:
 - sudo apt-get update && sudo apt-get upgrade
 - sudo apt-get install mosquitto
 - sudo apt-get install mosquitto-clients
