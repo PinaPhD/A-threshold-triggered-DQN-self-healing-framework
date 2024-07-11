@@ -32,8 +32,10 @@ Data plane virtual machine (VM) setup on the Ms-Azure Resource Group:
 
 Running the offshore WPP Network Topology [AS1 Network Topology](https://github.com/PinaPhD/JP3/blob/main/DataPlane/dataplane.py)
 Running Wireshark:
+
 ```bash
 sudo -E wireshark
+```
 
 ##### Setting up the ONOS SDN Controller Cluster:
 - sudo apt-get -y update && sudo apt-get -y upgrade
@@ -45,3 +47,6 @@ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 export JRE_HOME=$JAVA_HOME/jre
 export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib
 export PATH=$JAVA_HOME/bin:$PATH
+```
+
+- 
