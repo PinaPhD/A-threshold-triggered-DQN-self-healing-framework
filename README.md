@@ -70,7 +70,7 @@ Reference Section
 #### See more studies from us and cite our work:
 
 1. Mwangi, A., Sundsgaard, K., Vilaplana, J. A. L., Vilerá, K. V., & Yang, G. (2023, June). A system-based framework for optimal sensor placement in smart grids. In 2023 IEEE Belgrade PowerTech (pp. 1-6). IEEE.
-```bash
+```{bibliography}
 @inproceedings{mwangi2023system,
   title={A system-based framework for optimal sensor placement in smart grids},
   author={Mwangi, Agrippina and Sundsgaard, Konrad and Vilaplana, Jose Angel Leiva and Viler{\'a}, Kaio Vin{\'\i}cius and Yang, Guangya},
