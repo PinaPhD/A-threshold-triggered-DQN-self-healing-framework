@@ -1,9 +1,12 @@
 ---
-A secure self-healing module for software-defined industrial OT networks in extreme environments 
+Implementing self-healing autonomous software-defined OT networks in offshore wind power plants
 ---
 
+Autonomous software-defined OT networks in offshore Wind Power Plants (WPPs) enforce rigorous Service Level Agreements (SLAs) and Quality of Service (QoS) requirements to ensure reliable transmission of critical time-sensitive and best-effort data traffic. 
+Flash events of benign traffic flows causes network congestion resulting in intermittent network service interruptions which are undesirable for the offshore WPP operators. 
+This study proposes an externally adapted Deep Q-Networks (DQN) agent within the \textit{``Observe-Orient-Decide-Act"} Closed Control Loop (CCL) self-healing framework. 
+This agent detects traffic anomalies, learns optimal paths, and places rules in the SDN controller to reroute traffic, thereby maximizing network throughput and minimizing end-to-end latency.
 
-Self-healing involves the communication network's ability to detect and remediate issues autonomously, reducing the reliance on manual interventions. This is achieved using ML algorithms and automation to predict, detect, and respond to operational issues. Self-healing can either be data-based or event-based. We anticipate that adopting a self-healing framework in the software-defined industrial OT networks will improve SLAs and uptime, allowing Network Engineers to focus on developing solutions that drive business value and facilitate digital transformation without spending a significant portion of their time on manual tasks. Implementing a self-healing framework needs a mind shift from reactive to proactive approaches.
 
 
 ---
