@@ -85,3 +85,15 @@ export PATH=$JAVA_HOME/bin:$PATH
   publisher={MDPI}
 }
 ```
+
+3. Mwangi, A., Fumagalli, E., Gryning, M., & Gibescu, M. (2023, October). Building Resilience for SDN-Enabled IoT Networks in Offshore Renewable Energy Supply. In 2023 IEEE 9th World Forum on Internet of Things (WF-IoT) (pp. 1-2). IEEE.
+```bash
+@inproceedings{mwangi2023building,
+  title={Building Resilience for SDN-Enabled IoT Networks in Offshore Renewable Energy Supply},
+  author={Mwangi, Agrippina and Fumagalli, Elena and Gryning, Mikkel and Gibescu, Madeleine},
+  booktitle={2023 IEEE 9th World Forum on Internet of Things (WF-IoT)},
+  pages={1--2},
+  year={2023},
+  organization={IEEE}
+}
+```
