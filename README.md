@@ -31,6 +31,9 @@ Data plane virtual machine (VM) setup on the Ms-Azure Resource Group:
 - sudo ./util/install.sh -a
 
 Running the offshore WPP Network Topology [AS1 Network Topology](https://github.com/PinaPhD/JP3/blob/main/DataPlane/dataplane.py)
+Running Wireshark:
+```bash
+sudo -E wireshark
 
 ##### Setting up the ONOS SDN Controller Cluster:
 - sudo apt-get -y update && sudo apt-get -y upgrade
