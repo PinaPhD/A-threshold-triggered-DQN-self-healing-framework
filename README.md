@@ -10,7 +10,7 @@ This agent detects traffic anomalies, learns optimal paths, and places rules in 
 
 
 
-##### Setting up Ms-Azure Resource Group Proof-of-Concept Testbed
+#### Setting up Ms-Azure Resource Group Proof-of-Concept Testbed
 
 
 Virtual machine (VM) setup on the Ms-Azure Resource Group:
@@ -26,7 +26,7 @@ sudo ufw allow 3389/tcp
 sudo passwd amwangi254
 ```
 
-##### Installing Mininet on the Ubuntu Desktop (GUI) version:
+#### Installing Mininet on the Ubuntu Desktop (GUI) version:
 
 ```bash
 sudo apt install git python3-pip -y
@@ -48,7 +48,7 @@ Running Wireshark:
 sudo -E wireshark
 ```
 
-##### Setting up the ONOS SDN Controller Cluster:
+#### Setting up the ONOS SDN Controller Cluster:
 
 ```bash
 sudo apt-get -y update && sudo apt-get -y upgrade
