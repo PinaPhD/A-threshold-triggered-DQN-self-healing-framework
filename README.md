@@ -82,7 +82,7 @@ Reference Section
 ```
 
 2. Mwangi, A., Sahay, R., Fumagalli, E., Gryning, M., & Gibescu, M. (2024). Towards a Software-Defined Industrial IoT-Edge Network for Next-Generation Offshore Wind Farms: State of the Art, Resilience, and Self-X Network and Service Management. Energies, 17(12), 2897.
-```bash
+```{bibliography}
 @article{mwangi2024towards,
   title={Towards a Software-Defined Industrial IoT-Edge Network for Next-Generation Offshore Wind Farms: State of the Art, Resilience, and Self-X Network and Service Management},
   author={Mwangi, Agrippina and Sahay, Rishikesh and Fumagalli, Elena and Gryning, Mikkel and Gibescu, Madeleine},
@@ -96,7 +96,7 @@ Reference Section
 ```
 
 3. Mwangi, A., Fumagalli, E., Gryning, M., & Gibescu, M. (2023, October). Building Resilience for SDN-Enabled IoT Networks in Offshore Renewable Energy Supply. In 2023 IEEE 9th World Forum on Internet of Things (WF-IoT) (pp. 1-2). IEEE.
-```bash
+```{bibliography}
 @inproceedings{mwangi2023building,
   title={Building Resilience for SDN-Enabled IoT Networks in Offshore Renewable Energy Supply},
   author={Mwangi, Agrippina and Fumagalli, Elena and Gryning, Mikkel and Gibescu, Madeleine},
