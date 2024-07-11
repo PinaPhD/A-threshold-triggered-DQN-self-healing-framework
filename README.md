@@ -107,11 +107,10 @@ onos@root$ app activate org.onosproject.openflow
 ```
 
 Login GUI
-Open browser and type
-localhost:8181/onos/ui
+Open browser and type `http:<localhost>:8181/onos/ui`
 
-username: onos
-password: rocks
+- username: onos
+- password: rocks
 
 
 ---
