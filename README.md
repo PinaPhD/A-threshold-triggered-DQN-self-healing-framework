@@ -43,10 +43,13 @@ sudo -E wireshark
 ```
 
 ##### Setting up the ONOS SDN Controller Cluster:
-- sudo apt-get -y update && sudo apt-get -y upgrade
-- sudo apt install git wget vim
-- Append environment variable JAVA_HOME to ~/.bashrc
-  
+
+```bash
+sudo apt-get -y update && sudo apt-get -y upgrade
+sudo apt install git wget vim
+```
+
+Append environment variable JAVA_HOME to ~/.bashrc 
 ```bash
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 export JRE_HOME=$JAVA_HOME/jre
