@@ -112,8 +112,10 @@ onos@root$ app activate org.onosproject.openflow
 Login GUI
 Open browser and type `http:<localhost>:8181/onos/ui`
 
-- username: onos
-- password: rocks
+username/password: onos/rocks
+
+#### Implementing the Deep Q-Network self-healing agent in the knowledge plane
+
 
 
 ---
