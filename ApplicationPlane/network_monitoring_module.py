@@ -13,7 +13,6 @@ import logging
 import csv
 import pandas as pd
 from time import sleep, strftime
-from matplotlib.animation import FuncAnimation
 
 #OODA CCL - OBSERVE MODULE
 
