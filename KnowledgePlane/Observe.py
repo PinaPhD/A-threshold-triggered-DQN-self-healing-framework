@@ -159,13 +159,7 @@ if __name__ == "__main__":
     save_csv(hosts, 'hosts', folder_path)
     save_csv(flows, 'flows', folder_path)
 
-    '''
-       Analysing the flow information to separate data plane to control plane asynchronous
-       interactions from data plane switch communication
-    '''
-    dp_to_cp = flows[flows['appId'] == 'org.onosproject.core']
-    dp_to_dp = flows[flows['appId'] == 'org.onosproject.fwd']
-    
+
     '''
         Analysing the port statistics and mapping out the link utilization
     '''
