@@ -1,21 +1,27 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jul 16 14:01:26 2024
+Created on Tue Jul 16 20:34:00 2024
 
 @author: amwangi254
 """
 
-# publisher_socket.py
 import socket
-import json
-import time
-import random
 import logging
+import random
+import time
 from datetime import datetime
+import json
 
 # Setup logging
-log_file = "/tmp/publisher_socket.log"
+log_file = "/tmp/client_socket.log"
 logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s %(message)s')
+
+client_ip = "10.0.1.50"  # LDAQ 1
+server_ip_range = ["10.0.1.30", "10.0.1.31", "10.0.1.32", "10.0.1.33", "10.0.1.34"]
+server_ip = random.choice(server_ip_range)
+server_port = 50000
+
+end_date = datetime(2024, 10, 31)
 
 def generate_sensor_data():
     data = {
@@ -51,24 +57,17 @@ def generate_sensor_data():
     }
     return data
 
-server_ip = "10.0.1.30"  # IP Address for the receiving ECP node (e1)
-server_port = 50000  # Socket Port number
-
-end_date = datetime(2024, 10, 31)
-
 try:
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((server_ip, server_port))
-    logging.info("Connected to server at %s:%d", server_ip, server_port)
+    logging.info("Connected to server %s:%d", server_ip, server_port)
     
     while datetime.now() <= end_date:
-        data = generate_sensor_data()
-        client_socket.sendall(json.dumps(data).encode())
-        logging.info("Sent data: %s", data)
-        time.sleep(2)  #Running the script every 2 seconds 
-    logging.info("Reached the end date. stopping the script.")
-except Exception as e:
-    logging.error("An error occurred: %s", str(e))
+        sensor_data = generate_sensor_data()
+        data_str = json.dumps(sensor_data)
+        client_socket.send(data_str.encode())
+        logging.info("Sent data: %s", data_str)
+        time.sleep(random.uniform(1, 5))  # Send data at random intervals
 finally:
     client_socket.close()
-    logging.info("Disconnected from server")
+    logging.info("Client stopped")

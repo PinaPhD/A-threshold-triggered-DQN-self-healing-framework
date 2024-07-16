@@ -51,8 +51,8 @@ def generate_sensor_data():
     }
     return data
 
-server_ip = "10.0.1.30"  # IP Address for the receiving ECP node (e1)
-server_port = 50000  # Socket Port number
+server_ip = "10.0.1.32"  # IP Address for the receiving ECP node (e3)
+server_port = 50002  # Socket Port number
 
 end_date = datetime(2024, 10, 31)
 
