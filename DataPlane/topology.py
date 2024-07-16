@@ -177,7 +177,7 @@ class sdnnet( Topo ):
         '''
        
         #Creating the wind turbine generator Tower Switches
-        s21 = self.addSwitch('21')
+        s21 = self.addSwitch('s21')
         s22 = self.addSwitch('s22')
         s23 = self.addSwitch('s23')
         s24 = self.addSwitch('s24')
