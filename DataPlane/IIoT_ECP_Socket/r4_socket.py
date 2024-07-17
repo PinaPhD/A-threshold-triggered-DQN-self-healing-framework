@@ -7,17 +7,11 @@
     DATA PLANE: IIoT-Edge Computing Nodes 
 '''
 
-# publisher_socket.py
+
 import socket
-import json
 import time
 import random
-import logging
-from datetime import datetime
-
-# Setup logging
-log_file = "/tmp/publisher_socket.log"
-logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s %(message)s')
+import json
 
 def generate_sensor_data():
     data = {
@@ -53,24 +47,21 @@ def generate_sensor_data():
     }
     return data
 
-server_ip = "10.0.1.33"  # IP Address for the receiving ECP node (e2)
-server_port = 53000  # Socket Port number
+def send_sensor_data():
+    server_address = ('10.0.1.33', 10300)  # IP address and port of E4
 
-end_date = datetime(2024, 10, 31)
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        while True:
+            data = generate_sensor_data()
+            message = json.dumps(data)
+            print(f'Sending: {message}')
+            sock.sendto(message.encode(), server_address)
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print('Interrupted!')
+    finally:
+        sock.close()
 
-try:
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect((server_ip, server_port))
-    logging.info("Connected to server at %s:%d", server_ip, server_port)
-    
-    while datetime.now() <= end_date:
-        data = generate_sensor_data()
-        client_socket.sendall(json.dumps(data).encode())
-        logging.info("Sent data: %s", data)
-        time.sleep(2)  # Running the script every 2 seconds 
-    logging.info("Reached the end date. stopping the script.")
-except Exception as e:
-    logging.error("An error occurred: %s", str(e))
-finally:
-    client_socket.close()
-    logging.info("Disconnected from server")
+if __name__ == '__main__':
+    send_sensor_data()
