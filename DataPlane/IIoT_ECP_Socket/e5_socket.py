@@ -16,8 +16,8 @@ from datetime import datetime
 log_file = "/tmp/server_socket.log"
 logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s %(message)s')
 
-server_ip = "0.0.0.0"  # Listen on all interfaces
-server_port = 50000  # Port number to listen on
+server_ip = "10.0.1.54"  # Listen to R5 (LDAQ)
+server_port = 54000  # Port number to listen on
 end_date = datetime(2024, 10, 31)
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
