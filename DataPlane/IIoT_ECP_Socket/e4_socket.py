@@ -9,36 +9,23 @@
 
 
 import socket
-import logging
-from datetime import datetime
+import json
 
-# Setup logging
-log_file = "/tmp/server_socket.log"
-logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s %(message)s')
+def receive_sensor_data():
+    server_address = ('10.0.1.53', 10300)  # IP address and port to listen on
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.bind(server_address)
 
-server_ip = "10.0.1.53"  # Listen to R4 (LDAQ)
-server_port = 53000  # Port number to listen on
-end_date = datetime(2024, 10, 31)
+    try:
+        while True:
+            data, address = sock.recvfrom(4096)
+            message = data.decode()
+            sensor_data = json.loads(message)
+            print(f'Received: {json.dumps(sensor_data, indent=4)} from {address}')
+    except KeyboardInterrupt:
+        print('Interrupted!')
+    finally:
+        sock.close()
 
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.bind((server_ip, server_port))
-server_socket.listen(5)  # Allow up to 5 clients to connect
-
-logging.info("Server listening on %s:%d", server_ip, server_port)
-
-try:
-    while datetime.now() <= end_date:
-        client_socket, client_address = server_socket.accept()
-        logging.info("Connection from %s:%d", client_address[0], client_address[1])
-        
-        while datetime.now() <= end_date:
-            data = client_socket.recv(1024)
-            if not data:
-                break
-            logging.info("Received data: %s", data.decode())
-        
-        client_socket.close()
-        logging.info("Client %s disconnected", client_address[0])
-finally:
-    server_socket.close()
-    logging.info("Server stopped")
+if __name__ == '__main__':
+    receive_sensor_data()
