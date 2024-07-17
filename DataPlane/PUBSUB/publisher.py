@@ -57,11 +57,12 @@ def should_continue_running():
     return current_date <= end_date
 
 broker_address = "10.0.1.20"  # Eclipse Mosquitto MQTT broker (Q1)
+broker_port = 1883  # Default MQTT port
 client = mqtt.Client("Publisher")
 
 try:
-    client.connect(broker_address)
-    logging.info("Connected to the MQTT broker at %s", broker_address)
+    client.connect(broker_address, broker_port)
+    logging.info("Connected to the MQTT broker at %s:%d", broker_address, broker_port)
     
     while should_continue_running():
         data = generate_sensor_data()
@@ -75,4 +76,3 @@ finally:
     logging.info("Disconnected from the MQTT broker")
 
 logging.info("Script stopped running as the date exceeded 30th October 2024")
-
