@@ -9,11 +9,9 @@
 
 import requests
 import logging
-import csv
-import os
 import pandas as pd
-import redis
 from time import strftime
+from influxdb import InfluxDBClient
 
 # OODA CCL - OBSERVE MODULE
 
@@ -27,8 +25,8 @@ from time import strftime
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Prompting user for ONOS controller details
-controller_ip = input("Enter the IP address of the ONOS controller (default is 192.168.0.7): ")
-controller_ip = controller_ip if controller_ip else '192.168.0.7'
+controller_ip = input("Enter the IP address of the ONOS controller (default is 192.168.0.6: ")
+controller_ip = controller_ip if controller_ip else '192.168.0.6'
 onos_base_url = f'http://{controller_ip}:8181/onos/v1'
 
 username = input("Enter the username for ONOS controller (default is 'onos'): ")
@@ -37,16 +35,9 @@ password = input("Enter the password for ONOS controller (default is 'rocks'): "
 password = password if password else 'rocks'
 onos_auth = (username, password)
 
-# Redis configuration
-redis_host = input("Enter the Redis host (default is 'localhost'): ")
-redis_host = redis_host if redis_host else 'localhost'
-redis_port = input("Enter the Redis port (default is 6379): ")
-redis_port = int(redis_port) if redis_port else 6379
-redis_db = input("Enter the Redis database number (default is 0): ")
-redis_db = int(redis_db) if redis_db else 0
+#InfluxdB connection settings
+influx_client = InfluxDBClient(host='192.168.0.10', port=8086, username='admin', password='50acresIsinya', database='onos_metrics')
 
-# Connect to Redis
-r = redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db)
 
 # Retrieving the network devices(L2 switches)
 def get_devices():
@@ -114,14 +105,18 @@ def get_port_statistics():
     except requests.exceptions.RequestException as e:
         print(f"An error occurred while fetching network port statistics: {e}")
 
-# Function to save DataFrame to Redis
-def save_to_redis(df, key):
-    if not df.empty:
-        df_json = df.to_json(orient='records')
-        r.set(key, df_json)
-        logging.info(f"Data saved to Redis under key '{key}'")
-    else:
-        logging.info(f"No data available to save for key '{key}'")
+
+def write_to_influx(dataframe, measurement_name):
+    json_body = [
+        {
+            "measurement": measurement_name,
+            "time": strftime("%Y-%m-%dT%H:%M:%SZ"),  # ISO8601 format
+            "fields": row.to_dict()
+        }
+        for index, row in dataframe.iterrows()
+    ]
+    influx_client.write_points(json_body)
+
 
 # Main function to display network details
 if __name__ == "__main__":
@@ -138,26 +133,9 @@ if __name__ == "__main__":
     dp_to_cp = flows[flows['appId'] == 'org.onosproject.core']
     dp_to_dp = flows[flows['appId'] == 'org.onosproject.fwd']
 
-    # Fields to extract for the CSV
-    fieldnames = [
-        'device', 'port', 'packetsReceived', 'packetsSent', 'bytesReceived',
-        'bytesSent', 'packetsRxDropped', 'packetsTxDropped', 'packetsRxErrors',
-        'packetsTxErrors', 'durationSec'
-    ]
-    
-    # Write port statistics to Redis
-    port_stats_key = f'port_stats_{timestamp}'
-    for stat in port_stats['statistics']:
-        device = stat['device']
-        for port_info in stat['ports']:
-            row = {'device': device}
-            row.update(port_info)
-            r.rpush(port_stats_key, row)
-
-    print(f"Data has been saved to Redis with keys '{timestamp}'.")
-
-    # Save DataFrames to Redis with timestamped keys
-    save_to_redis(devices, f'devices_{timestamp}')
-    save_to_redis(links, f'links_{timestamp}')
-    save_to_redis(hosts, f'hosts_{timestamp}')
-    save_to_redis(flows, f'flows_{timestamp}')
+    # Write data to InfluxDB
+    write_to_influx(devices, "devices")
+    write_to_influx(links, "links")
+    write_to_influx(hosts, "hosts")
+    write_to_influx(flows, "flows")
+    write_to_influx(pd.DataFrame(port_stats), "port_stats")

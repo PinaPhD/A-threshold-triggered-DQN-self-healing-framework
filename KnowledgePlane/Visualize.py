@@ -40,7 +40,7 @@ def create_network_graph(devices, links):
 # Function to draw the network graph
 def draw_network_graph(G):
     pos = nx.spring_layout(G)
-    nx.draw(G, pos, with_labels=True, node_color='skyblue', node_size=2500, edge_color='gray', font_size=10, font_weight='bold')
+    nx.draw(G, pos, with_labels=True, node_color='skyblue', node_size=50, edge_color='gray', font_size=8)
     plt.title('Network Topology')
     plt.show()
 
