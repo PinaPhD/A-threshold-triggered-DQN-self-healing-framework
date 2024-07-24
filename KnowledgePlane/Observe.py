@@ -11,7 +11,7 @@ import requests
 import logging
 import pandas as pd
 from time import strftime
-from influxdb import InfluxDBClient
+#from influxdb import InfluxDBClient
 
 # OODA CCL - OBSERVE MODULE
 
@@ -25,7 +25,8 @@ from influxdb import InfluxDBClient
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Prompting user for ONOS controller details
-controller_ip = input("Enter the IP address of the ONOS controller (default is 192.168.0.6: ")
+print("OBSERVE MODULE AS* OT Network Topology \n   Disclaimer: Press Enter if you wish to use the default configurations\n\n")
+controller_ip = input("Enter the IP address of the ONOS controller (default is 192.168.0.6: )")
 controller_ip = controller_ip if controller_ip else '192.168.0.6'
 onos_base_url = f'http://{controller_ip}:8181/onos/v1'
 
@@ -35,8 +36,6 @@ password = input("Enter the password for ONOS controller (default is 'rocks'): "
 password = password if password else 'rocks'
 onos_auth = (username, password)
 
-#InfluxdB connection settings
-influx_client = InfluxDBClient(host='192.168.0.10', port=8086, username='admin', password='50acresIsinya', database='onos_metrics')
 
 
 # Retrieving the network devices(L2 switches)
@@ -106,16 +105,6 @@ def get_port_statistics():
         print(f"An error occurred while fetching network port statistics: {e}")
 
 
-def write_to_influx(dataframe, measurement_name):
-    json_body = [
-        {
-            "measurement": measurement_name,
-            "time": strftime("%Y-%m-%dT%H:%M:%SZ"),  # ISO8601 format
-            "fields": row.to_dict()
-        }
-        for index, row in dataframe.iterrows()
-    ]
-    influx_client.write_points(json_body)
 
 
 # Main function to display network details
@@ -133,9 +122,4 @@ if __name__ == "__main__":
     dp_to_cp = flows[flows['appId'] == 'org.onosproject.core']
     dp_to_dp = flows[flows['appId'] == 'org.onosproject.fwd']
 
-    # Write data to InfluxDB
-    write_to_influx(devices, "devices")
-    write_to_influx(links, "links")
-    write_to_influx(hosts, "hosts")
-    write_to_influx(flows, "flows")
-    write_to_influx(pd.DataFrame(port_stats), "port_stats")
+    

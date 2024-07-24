@@ -1,0 +1,6 @@
+
+InfluxDB
+Username: amwangi254
+password: 50acresIsinya
+Bucket: onos_metrics
+API Token: r9dTSShNv7VY_vsiZST5YrSpkWnSlc0RbkaJAa1UuPMTKQ2hyRfnfxkewZbHHgrhbhkuJO7qLZH3GqLeWFl6fQ==
