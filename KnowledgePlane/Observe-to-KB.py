@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Jul 24 16:08:47 2024
-
-@author: amwangi254
-"""
-
-# -*- coding: utf-8 -*-
-"""
     Created on Wed Jul 24 14:13:22 2024
     @Project Title: Implementing self-healing autonomous software-defined OT networks in offshore wind power plants
     @Task: Observe-Orient-Decide-Act Closed Control Loop Self-healing framework
@@ -117,13 +110,21 @@ def get_flows():
     except requests.exceptions.RequestException as e:
         print(f"An error occurred while fetching Network flows: {e}")
 
+
 def get_port_statistics():
     """ Fetches port statistics from all devices in the ONOS controller. """
     try:
         response = requests.get(f'{onos_base_url}/statistics/ports', auth=onos_auth)
         if response.status_code == 200:
             port_stats = response.json().get('statistics', [])
-            df = pd.DataFrame(port_stats)
+            # Flatten the nested JSON structure for easier CSV writing
+            flattened_stats = []
+            for device in port_stats:
+                device_id = device['device']
+                for port in device['ports']:
+                    port['device'] = device_id
+                    flattened_stats.append(port)
+            df = pd.DataFrame(flattened_stats)
             return df
         else:
             print(f"Failed to retrieve Port Statistics: Status code {response.status_code} - {response.text}")
@@ -131,34 +132,99 @@ def get_port_statistics():
         print(f"An error occurred while fetching network port statistics: {e}")
 
 
-#Determine the source to destination paths
-def get_path(src,dst):
-    response = requests.get(f'http://{onos_base_url}:8181/onos/v1/paths/{src}/{dst}', auth=onos_auth)
+#For the paths
+def get_devices_fp():
+    response = requests.get(f'{onos_base_url}/devices', auth=onos_auth)
     return response.json()
+
+# Function to get links
+def get_links_fp():
+    response = requests.get(f'{onos_base_url}/links', auth=onos_auth)
+    return response.json()
+
+#Determine the source to destination paths
+def find_all_paths(graph, start, end, path=[]):
+    path = path + [start]
+    if start == end:
+        return [path]
+    if start not in graph:
+        return []
+    paths = []
+    for node in graph[start]:
+        if node not in path:
+            newpaths = find_all_paths(graph, node, end, path)
+            for newpath in newpaths:
+                paths.append(newpath)
+    return paths
+
+# Generating the links between the source and destination paths
+def src_to_dest_paths():
+    devices = get_devices_fp()['devices']
+    links = get_links_fp()['links']
+    
+    # Build adjacency list for the graph
+    graph = {}
+    for link in links:
+        src = link['src']['device']
+        dst = link['dst']['device']
+        if src not in graph:
+            graph[src] = []
+        if dst not in graph:
+            graph[dst] = []
+        graph[src].append(dst)
+        graph[dst].append(src)
+    
+    # Iterate over each pair of devices to find all paths
+    device_ids = [device['id'] for device in devices]
+    paths_list = []
+    
+    for i in range(len(device_ids)):
+        for j in range(i + 1, len(device_ids)):
+            source_device = device_ids[i]
+            destination_device = device_ids[j]
+            
+            # Find all paths
+            paths = find_all_paths(graph, source_device, destination_device)
+            
+            # Store paths
+            for path in paths:
+                paths_list.append({
+                    'measurement': 'paths',
+                    'tags': {
+                        'source': source_device,
+                        'destination': destination_device
+                    },
+                    'fields': {
+                        'path': " -> ".join(path)
+                    },
+                    'time': strftime("%Y-%m-%dT%H:%M:%SZ")
+                })
+
+    if paths_list:
+        write_api.write(bucket=bucket, org=org, record=paths_list)
 
 
 def write_dataframe_to_influx(df, measurement):
-    """ Writes a DataFrame to InfluxDB with a given measurement name. """
+    """Writes a DataFrame to InfluxDB with a given measurement name."""
     points = []
+    timestamp = strftime("%Y-%m-%dT%H:%M:%SZ")  # ISO 8601 format
     for _, row in df.iterrows():
-        fields = {k: (str(v) if isinstance(v, dict) else v) for k, v in row.items() if pd.notnull(v)}  # Convert dicts to strings
-        point = influxdb_client.Point(measurement).tag("timestamp", timestamp)
+        fields = {k: v for k, v in row.items() if pd.notnull(v) and not isinstance(v, (list, dict))}
+        point = influxdb_client.Point(measurement).time(timestamp)
         for field_key, field_value in fields.items():
-            if isinstance(field_value, (int, float, str, bool)):  # Only allow supported types
-                point = point.field(field_key, field_value)
+            point = point.field(field_key, field_value)
         points.append(point)
     write_api.write(bucket=bucket, org=org, record=points)
-    
+  
 if __name__ == "__main__":
-    
-        '''
-            OBSERVE MODULE
-        '''
+    while True:
         
         devices = get_devices()
         links = get_links()
         hosts = get_hosts()
-        flows = get_flows()        
+        flows = get_flows()
+        port_stats = get_port_statistics()
+                
        
         # Create a timestamp
         timestamp = strftime("%Y%m%d_%H%M%S")
@@ -166,29 +232,26 @@ if __name__ == "__main__":
         # Writing dataframes to InfluxDB
         if not devices.empty:
             write_dataframe_to_influx(devices, 'devices')
+            
         if not links.empty:
             write_dataframe_to_influx(links, 'links')
+            
         if not hosts.empty:
             write_dataframe_to_influx(hosts, 'hosts')
+            
         if not flows.empty:
             # Analysing the flow information
             dp_to_cp = flows[flows['appId'] == 'org.onosproject.core']
             dp_to_dp = flows[flows['appId'] == 'org.onosproject.fwd']
             write_dataframe_to_influx(dp_to_cp, 'Switch-to-Controller-flows')
-            write_dataframe_to_influx(dp_to_dp, 'Switch-to-Switch-flows')
+            write_dataframe_to_influx(dp_to_dp, 'Switch-to-Switch-flows')  
             
-        '''
-            ORIENT MODULE
-        '''
-        port_stats = get_port_statistics()
-        
-        #Interpreting the port statistics to determine the current network state
-        
-        '''
-            KNOWLEDGE BASE
-        '''
-        
+        if not port_stats.empty:
+            write_dataframe_to_influx(port_stats, 'port statistics')
+            print("Port statistics have been updated in InfluxDB")
+      
+        #Creating the paths
+        src_to_dest_paths()
+
+    time.sleep(5)   #Collect the network statistics every 5 seconds
             
-       #while True:
-        #   try:     
-      #  time.sleep(10)  # Collect the network state every 10 seconds
