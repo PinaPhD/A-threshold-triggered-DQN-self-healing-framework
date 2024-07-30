@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""
+'''
     Created on Wed Jul 24 14:13:22 2024
     @Project Title: Implementing self-healing autonomous software-defined OT networks in offshore wind power plants
     @Task: Observe-Orient-Decide-Act Closed Control Loop Self-healing framework
     @author: amwangi254
-"""
+'''
 
 import influxdb_client
 from influxdb_client.client.write_api import SYNCHRONOUS
@@ -248,10 +248,13 @@ if __name__ == "__main__":
             
         if not port_stats.empty:
             write_dataframe_to_influx(port_stats, 'port statistics')
-            print("Port statistics have been updated in InfluxDB")
+            
       
         #Creating the paths
         src_to_dest_paths()
-
-    time.sleep(5)   #Collect the network statistics every 5 seconds
+        
+        print(f"Current network state update: {timestamp}")
+        
+    time.sleep(60)   #Collect the network statistics every minute
+    
             
