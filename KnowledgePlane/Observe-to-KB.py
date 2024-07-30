@@ -1,10 +1,21 @@
+
 # -*- coding: utf-8 -*-
+<<<<<<< HEAD
 '''
     Created on Wed Jul 24 14:13:22 2024
     @Project Title: Implementing self-healing autonomous software-defined OT networks in offshore wind power plants
     @Task: Observe-Orient-Decide-Act Closed Control Loop Self-healing framework
     @author: amwangi254
 '''
+=======
+''' 
+        Created on Wed Jul 24 14:13:22 2024
+        @Project Title: Implementing self-healing autonomous software-defined OT networks in offshore wind power plants
+        @Task: Observe-Orient-Decide-Act Closed Control Loop Self-healing framework
+        @author: amwangi254
+'''
+
+>>>>>>> 52c0a34683dd12869ad8d93ab43b222dd4043cc1
 
 import influxdb_client
 from influxdb_client.client.write_api import SYNCHRONOUS
@@ -216,7 +227,7 @@ def write_dataframe_to_influx(df, measurement):
         points.append(point)
     write_api.write(bucket=bucket, org=org, record=points)
   
-if __name__ == "__main__":
+if __name__ == "__main__": 
     while True:
         
         devices = get_devices()
@@ -224,8 +235,7 @@ if __name__ == "__main__":
         hosts = get_hosts()
         flows = get_flows()
         port_stats = get_port_statistics()
-                
-       
+        
         # Create a timestamp
         timestamp = strftime("%Y%m%d_%H%M%S")
         
@@ -252,9 +262,15 @@ if __name__ == "__main__":
       
         #Creating the paths
         src_to_dest_paths()
+<<<<<<< HEAD
         
         print(f"Current network state update: {timestamp}")
         
     time.sleep(60)   #Collect the network statistics every minute
     
+=======
+      
+        print(f"Current network state updated: {timestamp}")
+        time.sleep(10)   #Collect the network statistics every 10 seconds
+>>>>>>> 52c0a34683dd12869ad8d93ab43b222dd4043cc1
             
