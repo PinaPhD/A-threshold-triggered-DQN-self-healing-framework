@@ -255,15 +255,8 @@ if __name__ == "__main__":
       
         #Creating the paths
         src_to_dest_paths()
-<<<<<<< HEAD
-        
-        print(f"Current network state update: {timestamp}")
-        
-    time.sleep(60)   #Collect the network statistics every minute
-    
-=======
-      
+
         print(f"Current network state updated: {timestamp}")
         time.sleep(10)   #Collect the network statistics every 10 seconds
->>>>>>> 52c0a34683dd12869ad8d93ab43b222dd4043cc1
+
             
