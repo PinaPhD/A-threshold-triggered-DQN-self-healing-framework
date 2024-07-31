@@ -1,13 +1,6 @@
 
 # -*- coding: utf-8 -*-
-<<<<<<< HEAD
-'''
-    Created on Wed Jul 24 14:13:22 2024
-    @Project Title: Implementing self-healing autonomous software-defined OT networks in offshore wind power plants
-    @Task: Observe-Orient-Decide-Act Closed Control Loop Self-healing framework
-    @author: amwangi254
-'''
-=======
+
 ''' 
         Created on Wed Jul 24 14:13:22 2024
         @Project Title: Implementing self-healing autonomous software-defined OT networks in offshore wind power plants
@@ -15,7 +8,7 @@
         @author: amwangi254
 '''
 
->>>>>>> 52c0a34683dd12869ad8d93ab43b222dd4043cc1
+
 
 import influxdb_client
 from influxdb_client.client.write_api import SYNCHRONOUS
