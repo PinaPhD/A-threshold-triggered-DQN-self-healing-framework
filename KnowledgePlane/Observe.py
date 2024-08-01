@@ -193,20 +193,23 @@ def src_to_dest_paths():
             # Store paths
             for path in paths:
                 paths_list.append({
-                    'measurement': 'paths',
-                    'tags': {
-                        'source': source_device,
-                        'destination': destination_device
-                    },
-                    'fields': {
-                        'path': " -> ".join(path)
-                    },
-                    'time': strftime("%Y-%m-%dT%H:%M:%SZ")
+                    'source': source_device,
+                    'destination': destination_device,
+                    'path': " -> ".join(path)
                 })
 
-    if paths_list:
-        write_api.write(bucket=bucket, org=org, record=paths_list)
+    df_paths = pd.DataFrame(paths_list)
+    return df_paths
 
+def current_network_state():
+    devices = get_devices()
+    links = get_links()
+    hosts = get_hosts()
+    flows = get_flows()
+    port_stats = get_port_statistics()
+    paths = src_to_dest_paths()
+        
+    return devices, links, hosts, flows, port_stats, paths
 
 def write_dataframe_to_influx(df, measurement):
     """Writes a DataFrame to InfluxDB with a given measurement name."""
@@ -219,44 +222,58 @@ def write_dataframe_to_influx(df, measurement):
             point = point.field(field_key, field_value)
         points.append(point)
     write_api.write(bucket=bucket, org=org, record=points)
-  
+
+
 if __name__ == "__main__": 
-    while True:
+    
+    #Reading the current network state
+    devices, links, hosts, flows, port_stats, paths = current_network_state()
+    
+    
+    
+    
+    #For flows (permanent and temporary flows are identified)
+    dp_to_cp = flows[flows['appId'] == 'org.onosproject.core']  #Permanent
+    dp_to_dp = flows[flows['appId'] == 'org.onosproject.fwd']   #Renewed periodically/Temporary
+    
+    try:
+        # Save to   CSV with different sheets
+        while True:
+            if not devices.empty and not links.empty and not hosts.empty and not flows.empty and not port_stats.empty:
+                # Create a timestamp
+                timestamp = strftime("%Y%m%d_%H%M%S")
+                file_name = f'network_data_{timestamp}.xlsx'
+                with pd.ExcelWriter(file_name) as writer:
+                    devices.to_excel(writer, sheet_name='Devices')
+                    links.to_excel(writer, sheet_name='Links')
+                    hosts.to_excel(writer, sheet_name='Hosts')
+                    dp_to_dp.to_excel(writer, sheet_name='FD_to_FD_Flows')
+                    dp_to_cp.to_excel(writer, sheet_name='FD_to_SDNC_Flows')
+                    paths.to_excel(writer, sheet_name='Paths')
+                print(f"Data successfully sent to Knowledge Base and saved to {file_name}")
+                # Sleep for a predefined interval before the next iteration
+                time.sleep(5)  # Check the state of the topology matrix every 5 seconds
+            else:
+                error_message = "Network topology is faulty because the following components are empty: "
+                if devices.empty:
+                    error_message += "devices "
+                if links.empty:
+                    error_message += "links "
+                if hosts.empty:
+                    error_message += "hosts "
+                if flows.empty:
+                    error_message += "flows "
+                if port_stats.empty:
+                    error_message += "port_stats "
+                
+                # Raise an alarm with the error message
+                raise Exception(error_message)
+    
+    except KeyboardInterrupt:
+        print('\n\nOBSERVE MODULE NOTICE \n\n Network Engineer has interrupted the process ')
         
-        devices = get_devices()
-        links = get_links()
-        hosts = get_hosts()
-        flows = get_flows()
-        port_stats = get_port_statistics()
+    
+    
+    
         
-        # Create a timestamp
-        timestamp = strftime("%Y%m%d_%H%M%S")
-        
-        # Writing dataframes to InfluxDB
-        if not devices.empty:
-            write_dataframe_to_influx(devices, 'devices')
-            
-        if not links.empty:
-            write_dataframe_to_influx(links, 'links')
-            
-        if not hosts.empty:
-            write_dataframe_to_influx(hosts, 'hosts')
-            
-        if not flows.empty:
-            # Analysing the flow information
-            dp_to_cp = flows[flows['appId'] == 'org.onosproject.core']
-            dp_to_dp = flows[flows['appId'] == 'org.onosproject.fwd']
-            write_dataframe_to_influx(dp_to_cp, 'Switch-to-Controller-flows')
-            write_dataframe_to_influx(dp_to_dp, 'Switch-to-Switch-flows')  
-            
-        if not port_stats.empty:
-            write_dataframe_to_influx(port_stats, 'port statistics')
-            
-      
-        #Creating the paths
-        src_to_dest_paths()
-
-        print(f"Current network state updated: {timestamp}")
-        time.sleep(10)   #Collect the network statistics every 10 seconds
-
-            
+           
