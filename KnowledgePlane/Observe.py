@@ -8,8 +8,6 @@
         @author: amwangi254
 '''
 
-
-
 import influxdb_client
 from influxdb_client.client.write_api import SYNCHRONOUS
 import requests
@@ -228,16 +226,13 @@ if __name__ == "__main__":
     
     #Reading the current network state
     devices, links, hosts, flows, port_stats, paths = current_network_state()
-    
-    
-    
-    
+
     #For flows (permanent and temporary flows are identified)
     dp_to_cp = flows[flows['appId'] == 'org.onosproject.core']  #Permanent
     dp_to_dp = flows[flows['appId'] == 'org.onosproject.fwd']   #Renewed periodically/Temporary
     
     try:
-        # Save to   CSV with different sheets
+        # Save to Excel spreadsheets with different sheets
         while True:
             if not devices.empty and not links.empty and not hosts.empty and not flows.empty and not port_stats.empty:
                 # Create a timestamp
@@ -271,9 +266,3 @@ if __name__ == "__main__":
     
     except KeyboardInterrupt:
         print('\n\nOBSERVE MODULE NOTICE \n\n Network Engineer has interrupted the process ')
-        
-    
-    
-    
-        
-           
