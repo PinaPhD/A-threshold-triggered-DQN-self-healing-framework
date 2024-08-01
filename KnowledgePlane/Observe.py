@@ -237,7 +237,7 @@ if __name__ == "__main__":
             if not devices.empty and not links.empty and not hosts.empty and not flows.empty and not port_stats.empty:
                 # Create a timestamp
                 timestamp = strftime("%Y%m%d_%H%M%S")
-                file_name = f'network_data_{timestamp}.xlsx'
+                file_name = f'Data/network_data_{timestamp}.xlsx'
                 with pd.ExcelWriter(file_name) as writer:
                     devices.to_excel(writer, sheet_name='Devices')
                     links.to_excel(writer, sheet_name='Links')
