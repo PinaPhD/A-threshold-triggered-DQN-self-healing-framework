@@ -245,7 +245,9 @@ if __name__ == "__main__":
                     dp_to_dp.to_excel(writer, sheet_name='FD_to_FD_Flows')
                     dp_to_cp.to_excel(writer, sheet_name='FD_to_SDNC_Flows')
                     paths.to_excel(writer, sheet_name='Paths')
+                    port_stats.to_excel(writer, sheet_name='Port_stats')
                 print(f"Data successfully sent to Knowledge Base and saved to {file_name}")
+                
                 # Sleep for a predefined interval before the next iteration
                 time.sleep(5)  # Check the state of the topology matrix every 5 seconds
             else:
