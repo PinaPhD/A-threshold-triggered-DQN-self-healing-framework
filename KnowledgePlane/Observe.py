@@ -12,7 +12,6 @@ import influxdb_client
 from influxdb_client.client.write_api import SYNCHRONOUS
 import requests
 import logging
-import time
 import pandas as pd
 from time import strftime
 
@@ -48,7 +47,7 @@ onos_auth = (username, password)
 # InfluxDB configuration
 url = "http://192.168.0.7:8086"  #InfluxDB URL (Host Server)
 token = "qkc2ZrwHen0ZzaPyBisN9E5bZYGNmhwO9R-ATu077_ieVy9ZqrhxqvHlzmn8zS2A5iCiBTGmSUM4hz9flPX6yg=="  # InfluxDB API Token
-org = "Knowledge_Base"  # InfluxDB Organization
+org = "Knowledge_Base"   #InfluxDB Organization
 bucket = "onos_metrics"   #Influx Bucket Name
 
 # Initialize InfluxDB client
@@ -212,7 +211,7 @@ def current_network_state():
 def write_dataframe_to_influx(df, measurement):
     """Writes a DataFrame to InfluxDB with a given measurement name."""
     points = []
-    timestamp = strftime("%Y-%m-%dT%H:%M:%SZ")  # ISO 8601 format
+    timestamp = strftime("%Y%m%d_%H%M%S")  # ISO 8601 format
     for _, row in df.iterrows():
         fields = {k: v for k, v in row.items() if pd.notnull(v) and not isinstance(v, (list, dict))}
         point = influxdb_client.Point(measurement).time(timestamp)
@@ -222,49 +221,134 @@ def write_dataframe_to_influx(df, measurement):
     write_api.write(bucket=bucket, org=org, record=points)
 
 
-if __name__ == "__main__": 
-    
-    #Reading the current network state
+if __name__ == "__main__":
+    # Reading the current network state
     devices, links, hosts, flows, port_stats, paths = current_network_state()
 
-    #For flows (permanent and temporary flows are identified)
-    dp_to_cp = flows[flows['appId'] == 'org.onosproject.core']  #Permanent
-    dp_to_dp = flows[flows['appId'] == 'org.onosproject.fwd']   #Renewed periodically/Temporary
+    # For flows (permanent and temporary flows are identified)
+    dp_to_cp = flows[flows['appId'] == 'org.onosproject.core']  # Permanent
+    dp_to_dp = flows[flows['appId'] == 'org.onosproject.fwd']   # Renewed periodically/Temporary
+
+    # Create Port DataFrame
+    ports = []
+    for index, row in links.iterrows():
+        src_device, src_port = row['src']['device'], row['src']['port']
+        dest_device, dest_port = row['dst']['device'], row['dst']['port']
+        ports.append({'port_identifier': f'{src_device}_{src_port}', 'device_name': src_device, 'port_number': src_port})
+        ports.append({'port_identifier': f'{dest_device}_{dest_port}', 'device_name': dest_device, 'port_number': dest_port})
     
+    port_df = pd.DataFrame(ports).drop_duplicates().reset_index(drop=True)
+
+    # Create Network Links DataFrame
+    network_links = []
+    for index, row in links.iterrows():
+        src_device, src_port = row['src']['device'], row['src']['port']
+        dest_device, dest_port = row['dst']['device'], row['dst']['port']
+        link_id = f'{src_device}_{src_port}_to_{dest_device}_{dest_port}'
+        src_port_identifier = f'{src_device}_{src_port}'
+        dest_port_identifier = f'{dest_device}_{dest_port}'
+        network_links.append({'link_id': link_id, 'src_port_identifier': src_port_identifier, 'dest_port_identifier': dest_port_identifier})
+    
+    network_links_df = pd.DataFrame(network_links)
+
+    # Initialize DataFrame to store link port statistics
+    link_port_stats_df = pd.DataFrame(columns=['link_stats_id', 'link_id', 'timestamp', 'PacketsReceived', 'PacketsSent', 'BytesReceived', 'BytesSent', 'PacketsRxDropped', 'PacketsTxDropped', 'PacketsRxErrors', 'PacketsTxErrors'])
+
+    # Dictionary to store previous port statistics
+    prev_port_stats = {}
+
+    def calculate_differences(new_stats, prev_stats):
+        differences = {}
+        for key in new_stats.keys():
+            if key in prev_stats:
+                differences[key] = new_stats[key] - prev_stats[key]
+            else:
+                differences[key] = new_stats[key]
+        return differences
+
+    # Save to Excel spreadsheets with different sheets
     try:
-        # Save to Excel spreadsheets with different sheets
         while True:
             if not devices.empty and not links.empty and not hosts.empty and not flows.empty and not port_stats.empty:
-                # Create a timestamp
-                timestamp = strftime("%Y%m%d_%H%M%S")
-                file_name = f'Data/network_data_{timestamp}.xlsx'
-                with pd.ExcelWriter(file_name) as writer:
-                    devices.to_excel(writer, sheet_name='Devices')
-                    links.to_excel(writer, sheet_name='Links')
-                    hosts.to_excel(writer, sheet_name='Hosts')
-                    dp_to_dp.to_excel(writer, sheet_name='FD_to_FD_Flows')
-                    dp_to_cp.to_excel(writer, sheet_name='FD_to_SDNC_Flows')
-                    paths.to_excel(writer, sheet_name='Paths')
-                    port_stats.to_excel(writer, sheet_name='Port_stats')
-                print(f"Data successfully sent to Knowledge Base and saved to {file_name}")
+                
+                '''
+                Capturing network link performance parameters
+                '''
+                for index, row in network_links_df.iterrows():
+                    # Create a timestamp
+                    timestamp = strftime("%Y%m%d_%H%M%S")
+                    link_id = row['link_id']
+                    src_port_identifier = row['src_port_identifier']
+                    dest_port_identifier = row['dest_port_identifier']
+                    
+                    src_stats = port_stats[(port_stats['device'] == src_port_identifier.split('_')[0]) & (port_stats['port'] == int(src_port_identifier.split('_')[1]))]
+                    dest_stats = port_stats[(port_stats['device'] == dest_port_identifier.split('_')[0]) & (port_stats['port'] == int(dest_port_identifier.split('_')[1]))]
+                    
+                    if not src_stats.empty and not dest_stats.empty:
+                        src_stats = src_stats.iloc[0].to_dict()
+                        dest_stats = dest_stats.iloc[0].to_dict()
+    
+                        if src_port_identifier in prev_port_stats and dest_port_identifier in prev_port_stats:
+                            src_diff = calculate_differences(src_stats, prev_port_stats[src_port_identifier])
+                            dest_diff = calculate_differences(dest_stats, prev_port_stats[dest_port_identifier])
+    
+                            link_stat = {
+                                'link_stats_id': f"{link_id}_{timestamp}",
+                                'link_id': link_id,
+                                'timestamp': timestamp,
+                                'PacketsReceived': src_diff.get('PacketsReceived', 0) + dest_diff.get('PacketsReceived', 0),
+                                'PacketsSent': src_diff.get('PacketsSent', 0) + dest_diff.get('PacketsSent', 0),
+                                'BytesReceived': src_diff.get('BytesReceived', 0) + dest_diff.get('BytesReceived', 0),
+                                'BytesSent': src_diff.get('BytesSent', 0) + dest_diff.get('BytesSent', 0),
+                                'PacketsRxDropped': src_diff.get('PacketsRxDropped', 0) + dest_diff.get('PacketsRxDropped', 0),
+                                'PacketsTxDropped': src_diff.get('PacketsTxDropped', 0) + dest_diff.get('PacketsTxDropped', 0),
+                                'PacketsRxErrors': src_diff.get('PacketsRxErrors', 0) + dest_diff.get('PacketsRxErrors', 0),
+                                'PacketsTxErrors': src_diff.get('PacketsTxErrors', 0) + dest_diff.get('PacketsTxErrors', 0),
+                            }
+    
+                            link_port_stats_df = link_port_stats_df.append(link_stat, ignore_index=True)
+    
+                        prev_port_stats[src_port_identifier] = src_stats
+                        prev_port_stats[dest_port_identifier] = dest_stats
+                        
+                        # Write to InfluxDB
+                        write_dataframe_to_influx(link_port_stats_df, 'link_port_stats')
+            
                 
                 # Sleep for a predefined interval before the next iteration
-                time.sleep(5)  # Check the state of the topology matrix every 5 seconds
+               # time.sleep(300)  # Check the state of the topology matrix every 5 minutes
             else:
                 error_message = "Network topology is faulty because the following components are empty: "
                 if devices.empty:
-                    error_message += "devices "
+                    error_message += "devices not found "
                 if links.empty:
-                    error_message += "links "
+                    error_message += "links not found  "
                 if hosts.empty:
-                    error_message += "hosts "
+                    error_message += "hosts not found  "
                 if flows.empty:
-                    error_message += "flows "
+                    error_message += "flows not found  "
                 if port_stats.empty:
-                    error_message += "port_stats "
+                    error_message += "port_stats not found  "
                 
                 # Raise an alarm with the error message
                 raise Exception(error_message)
-    
+
     except KeyboardInterrupt:
+        # Create a timestamp
+        timestamp = strftime("%Y%m%d_%H%M%S")
+        file_name = f'Data/network_data_{timestamp}.xlsx'
+        with pd.ExcelWriter(file_name) as writer:
+            devices.to_excel(writer, sheet_name='Devices')
+            links.to_excel(writer, sheet_name='Links')
+            hosts.to_excel(writer, sheet_name='Hosts')
+            dp_to_dp.to_excel(writer, sheet_name='FD_to_FD_Flows')
+            dp_to_cp.to_excel(writer, sheet_name='FD_to_SDNC_Flows')
+            paths.to_excel(writer, sheet_name='Paths')
+            port_stats.to_excel(writer, sheet_name='Port_stats')
+            port_df.to_excel(writer, sheet_name='Port')
+            network_links_df.to_excel(writer, sheet_name='Network_Links')
+           # device_port_stats_df.to_excel(writer, sheet_name='Device_Port_Stats')
+            link_port_stats_df.to_excel(writer, sheet_name='Link_Port_Stats')
+            
+        print(f"Data successfully sent to Knowledge Base and saved to {file_name}")
         print('\n\nOBSERVE MODULE NOTICE \n\n Network Engineer has interrupted the process ')
