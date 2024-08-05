@@ -301,10 +301,11 @@ if __name__ == "__main__":
             #link_port_stats_df = pd.concat([link_port_stats_df, new_df], ignore_index=True)
         
             # Write updated link_port_stats_df to InfluxDB
-            # write_dataframe_to_influx(link_port_stats_df, 'link_port_stats')
+            print(f'\nWriting port statistics to influxdB bucket:{bucket} at: {timestamp}')
+            write_dataframe_to_influx(new_df, 'link_port_stats')
             
             #Write to a csv file (Backup)
-            print(f'\nWriting port statistics to the csv file at: {timestamp}')
+            
             new_df.to_csv(csv_file, mode='a', header=False, index=False)
             
             # Wait for 1 minute before the next iteration
