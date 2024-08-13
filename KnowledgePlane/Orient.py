@@ -49,22 +49,22 @@ def visualize_network(devices, links, hosts):
     plt.show()
 
 '''
-    Capturing the traffic matrix based on link utilization and src-to-dest latency
-    Case I: Merging Unit (MU) to virtual Intelligent Electronic Device (vIED) in the vPAC node
-    Case II: WTG local data acquisition module to Edge Computing Platform Node 
-    Case III: vIED to WTG actuator (bs)
-    Case IV: ECP node to WTG actuator (qs)
+        Capturing the traffic matrix based on link utilization and src-to-dest latency
+        Case I: Merging Unit (MU) to virtual Intelligent Electronic Device (vIED) in the vPAC node
+        Case II: WTG local data acquisition module to Edge Computing Platform Node 
+        Case III: vIED to WTG actuator (bs)
+        Case IV: ECP node to WTG actuator (qs)
 '''
 
 def network_traffic_state(port_stats_df, links_df):
-    """
-    Computes network traffic state including link utilization, throughput, error rates,
-    packet drops, and latency values for each link, and stores the results in a DataFrame.
+    '''
+        Computes network traffic state including link utilization, throughput, error rates,
+        packet drops, and latency values for each link, and stores the results in a DataFrame.
+        :param port_stats_df: DataFrame containing port statistics
+        :param links_df: DataFrame containing network links
+        :return: DataFrame containing computed network metrics for each link
+    '''
 
-    :param port_stats_df: DataFrame containing port statistics
-    :param links_df: DataFrame containing network links
-    :return: DataFrame containing computed network metrics for each link
-    """
     metrics_list = []
 
     for _, link in links_df.iterrows():
