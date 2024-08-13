@@ -20,9 +20,9 @@ import os
 
 
 '''
-    Interact with the ONOS and InfluxDB:
-    Connecting to the primary SDN controller using a 8181 RESTful API based url and 
-    BASE24 Authentication (Plain user/password credentials)
+        Interact with the ONOS and InfluxDB:
+        Connecting to the primary SDN controller using a 8181 RESTful API based url and 
+        BASE24 Authentication (Plain user/password credentials)
 '''
 
 
@@ -43,10 +43,10 @@ onos_auth = (username, password)
 
 
 '''
-    Setting up the InfluxDB Connection
-    Connection via TCP/8086 with API Token Authentication
-    Bucket name: onos_metrics
-    Organization: Knowledge_Base
+        Setting up the InfluxDB Connection
+        Connection via TCP/8086 with API Token Authentication
+        Bucket name: onos_metrics
+        Organization: Knowledge_Base
 '''
 
 
@@ -300,7 +300,7 @@ if __name__ == "__main__":
             #link_port_stats_df = pd.concat([link_port_stats_df, new_df], ignore_index=True)
         
             # Write updated link_port_stats_df to InfluxDB
-            print(f'\nWriting port statistics to influxdB bucket:{bucket} at: {timestamp}')
+            print(f'\nWriting port statistics to influxdB bucket: {bucket} at: {timestamp}')
             write_dataframe_to_influx(new_df, 'link_port_stats')
             
             #Write to a csv file (Backup)
