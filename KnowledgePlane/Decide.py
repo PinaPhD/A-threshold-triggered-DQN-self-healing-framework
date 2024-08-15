@@ -109,6 +109,11 @@ class SelfHealingAgent:
         return next_state, reward, done
     
 if __name__ == "__main__":
+    '''
+        Create the customized environment based on the violation thresholds from the ABSTRACTION module
+        Obtain the real-time network state (s_t) from the knowledge base defining the traffic matrix and temperature matrix
+        Call the self-healing function to use these values as an input 
+    '''
     qos_requirements = (100, 80, 70)  #latency, utilization, and temperature thresholds respectively
     self_healing_agent = SelfHealingAgent(qos_requirements)
     
