@@ -17,24 +17,30 @@ import random                                  #Random number generation (For th
 
 
 #Define parameters
-state_size = 20          #Capture the number of inputs (or features) the model takes
+state_size = 196         #Capture the number of inputs (or features) the model takes
 action_size = 5          #Set of discrete actions that the Agent can take
-gamma = 0.995            #Discounted rate for future rewards
+gamma = 0.95             #Discounted rate for future rewards
 epsilon = 1.0            #Initial Exploration rate
 epsilon_min = 0.01       #Minimum value for the Exploration rate 
 epsilon_decay = 0.995    #Epsilon decay over time
-learning_rate = 0.001    #Model learning speed
+learning_rate = 0.001    #Model learning speed (controls how big of a step the optimizer takes during learning)
 batch_size = 32          #Number of samples to use in a single training epoch
 memory_size = 2000       #Number of experiences to remember
 
+
 #Define the Deep Q-Network Model - Acts like the brain of the DECIDE Model that should perform self-healing
 def build_model():
-    model=Sequential()
-    model.add(Dense(24, input_dim=state_size,activation='relu'))
-    model.add(Dense(24, activation='relu'))
-    model.add(Dense(action_size,activation='linear'))
+    model=Sequential() #Defines the model as a sequence of layers where each layer feeds into the next one
+    model.add(Dense(24, input_dim=state_size,activation='relu')) # Hidden layer 1: fully connected layer with 24 neurons  and an input size based on the state space
+    model.add(Dense(24, activation='relu'))  #hidden layer 2: continues to process data from hidden layer 1
+    model.add(Dense(action_size,activation='linear'))  #The output represents the different action values 
     model.compile(loss='mse',optimizer=tf.keras.optimizers.Adam(learning_rate=learning_rate))
     return model
+
+'''
+    Model compilation using mean squared error (measures how well the model's predictions match the actual outcomes during training)
+    Uses the Adam optimizer to adjust the weights of the neurons to improve learning using the learning rate defined earlier
+'''
 
 #Define the threshold-triggered DQN self-healing agent
 class DQNAgent:
@@ -109,6 +115,7 @@ class SelfHealingAgent:
         return next_state, reward, done
     
 if __name__ == "__main__":
+    
     '''
         Create the customized environment based on the violation thresholds from the ABSTRACTION module
         Obtain the real-time network state (s_t) from the knowledge base defining the traffic matrix and temperature matrix
