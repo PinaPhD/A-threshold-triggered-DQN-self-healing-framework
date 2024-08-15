@@ -8,26 +8,26 @@
     disruptions.
 '''
 
-import numpy as np
-import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-from collections import deque
-import random
+import numpy as np                             #Numerical operations
+import tensorflow as tf                        #Use TensorFlow for building and training the neural network
+from tensorflow.keras.models import Sequential #Sequential is used to build the model layer by layer
+from tensorflow.keras.layers import Dense      #Type of neural network (Dense)
+from collections import deque                  #Deque creates a memory buffer to store experiences
+import random                                  #Random number generation (For the Agent exploration process)
 
 
 #Define parameters
-state_size = 20   #Capture the St = (TM_t,tau_t) state space parameters
-action_size = 5   #Set of discrete actions that the network can take
-gamma = 0.995     #Discounted rate
-epsilon = 1.0     #Exploration rate
-epsilon_min = 0.01   
-epsilon_decay = 0.995
-learning_rate = 0.001    #alpha
-batch_size = 32
-memory_size = 2000
+state_size = 20          #Capture the number of inputs (or features) the model takes
+action_size = 5          #Set of discrete actions that the Agent can take
+gamma = 0.995            #Discounted rate for future rewards
+epsilon = 1.0            #Initial Exploration rate
+epsilon_min = 0.01       #Minimum value for the Exploration rate 
+epsilon_decay = 0.995    #Epsilon decay over time
+learning_rate = 0.001    #Model learning speed
+batch_size = 32          #Number of samples to use in a single training epoch
+memory_size = 2000       #Number of experiences to remember
 
-#Define the Deep Q-Network Model
+#Define the Deep Q-Network Model - Acts like the brain of the DECIDE Model that should perform self-healing
 def build_model():
     model=Sequential()
     model.add(Dense(24, input_dim=state_size,activation='relu'))
@@ -39,7 +39,7 @@ def build_model():
 #Define the threshold-triggered DQN self-healing agent
 class DQNAgent:
     def __init__(self):
-        self.model()=build_model()
+        self.model = build_model()
         self.target_model=build_model()
         self.memory = deque(maxlen=memory_size)
         self.epsilon = epsilon
@@ -114,7 +114,7 @@ if __name__ == "__main__":
     
     def get_current_state():
         TM_t = np.random.rand(10,2) #read from the OBSERVE Module
-        tau_t = np.random.rand(10, 9)  # Temperature matrix (tau_t)
+        tau_t = np.random.rand(10)  # Temperature matrix (tau_t)
         return TM_t, tau_t
     
     self_healing_agent.run(get_current_state)
