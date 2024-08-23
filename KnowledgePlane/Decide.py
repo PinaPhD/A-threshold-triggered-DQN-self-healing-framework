@@ -45,10 +45,10 @@ def build_model():
 #Define the threshold-triggered DQN self-healing agent
 class DQNAgent:
     def __init__(self):
-        self.model = build_model()
-        self.target_model=build_model()
-        self.memory = deque(maxlen=memory_size)
-        self.epsilon = epsilon
+        self.model = build_model()      #The primary DNN model
+        self.target_model=build_model()     #Create a secondary memory (Q-target) for stable learning
+        self.memory = deque(maxlen=memory_size)   #Creates an experience replay (using deque) for storing experiences
+        self.epsilon = epsilon                    #Exploration rate
         
     def remember(self,state,action,reward,next_state,done):
         self.memory.append((state,action,reward,next_state,done))
