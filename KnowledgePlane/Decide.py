@@ -8,7 +8,7 @@
     disruptions.
 '''
 
-import numpy as np                             #Numerical operations
+import numpy as np                             
 import tensorflow as tf                        #Use TensorFlow for building and training the neural network
 from tensorflow.keras.models import Sequential #Sequential is used to build the model layer by layer
 from tensorflow.keras.layers import Dense      #Type of neural network (Dense)
