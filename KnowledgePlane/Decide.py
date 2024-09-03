@@ -19,7 +19,7 @@ import random                                  #Random number generation (For th
 #Define parameters
 state_size = 196         #Capture the number of inputs (or features) the model takes
 action_size = 5          #Set of discrete actions that the Agent can take
-gamma = 0.95             #Discounted rate for future rewards
+gamma = 0.995            #Discounted rate for future rewards
 epsilon = 1.0            #Initial Exploration rate
 epsilon_min = 0.01       #Minimum value for the Exploration rate 
 epsilon_decay = 0.995    #Epsilon decay over time
@@ -121,6 +121,7 @@ if __name__ == "__main__":
         Obtain the real-time network state (s_t) from the knowledge base defining the traffic matrix and temperature matrix
         Call the self-healing function to use these values as an input 
     '''
+    
     qos_requirements = (100, 80, 70)  #latency, utilization, and temperature thresholds respectively
     self_healing_agent = SelfHealingAgent(qos_requirements)
     
