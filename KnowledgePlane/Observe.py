@@ -20,7 +20,7 @@ import os
 
 
 '''
-        Interact with the ONOS and InfluxDB:
+        ONOS SDN controller cluster interacting with the Knowledge Base
         Connecting to the primary SDN controller using a 8181 RESTful API based url and 
         BASE24 Authentication (Plain user/password credentials)
 '''
@@ -30,7 +30,7 @@ import os
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Prompting user for ONOS controller details
-print("OBSERVE MODULE AS* OT Network Topology \n   Disclaimer: Press Enter if you wish to use the default configurations\n\n")
+print("OBSERVE MODULE AS(n) OT Network Topology.\n Disclaimer: Press Enter if you wish to use the default configurations\n\n")
 controller_ip = input("Enter the IP address of the ONOS controller (default is 192.168.0.6: )")
 controller_ip = controller_ip if controller_ip else '192.168.0.6'
 onos_base_url = f'http://{controller_ip}:8181/onos/v1'
@@ -49,12 +49,12 @@ onos_auth = (username, password)
         Organization: Knowledge_Base
 '''
 
-
 # InfluxDB configuration
 url = "http://192.168.0.7:8086"  #InfluxDB URL (Host Server)
 token = "qkc2ZrwHen0ZzaPyBisN9E5bZYGNmhwO9R-ATu077_ieVy9ZqrhxqvHlzmn8zS2A5iCiBTGmSUM4hz9flPX6yg=="  # InfluxDB API Token
 org = "Knowledge_Base"   #InfluxDB Organization
 bucket = "Observe_Module_KB"   #Influx Bucket Name
+
 
 # Initialize InfluxDB client
 client = influxdb_client.InfluxDBClient(
@@ -66,7 +66,10 @@ client = influxdb_client.InfluxDBClient(
 write_api = client.write_api(write_options=SYNCHRONOUS)
 
 def get_devices():
-    """ Fetches network devices from the ONOS controller. """
+    """ 
+        Fetches network devices from the ONOS controller. 
+    """
+    
     try:
         response = requests.get(f'{onos_base_url}/devices', auth=onos_auth)
         if response.status_code == 200:
@@ -79,7 +82,10 @@ def get_devices():
         print(f"An error occurred while fetching Network devices: {e}")
 
 def get_links():
-    """ Fetches network links from the ONOS controller. """
+    """ 
+        Fetches network links from the ONOS controller. 
+    """
+    
     try:
         response = requests.get(f'{onos_base_url}/links', auth=onos_auth)
         if response.status_code == 200:
@@ -92,7 +98,10 @@ def get_links():
         print(f"An error occurred while fetching Network Links: {e}")
 
 def get_hosts():
-    """ Fetches network hosts from the ONOS controller. """
+    """ 
+        Fetches network hosts from the ONOS controller. 
+    """
+
     try:
         response = requests.get(f'{onos_base_url}/hosts', auth=onos_auth)
         if response.status_code == 200:
@@ -105,7 +114,10 @@ def get_hosts():
         print(f"An error occurred while fetching Network hosts: {e}")
 
 def get_flows():
-    """ Fetches flow rules from the ONOS controller. """
+    """ 
+        Fetches flow rules from the ONOS controller. 
+    """
+    
     try:
         response = requests.get(f'{onos_base_url}/flows', auth=onos_auth)
         if response.status_code == 200:
@@ -119,7 +131,10 @@ def get_flows():
 
 
 def get_port_statistics():
-    """ Fetches port statistics from all devices in the ONOS controller. """
+    """ 
+        Fetches port statistics from all devices in the ONOS controller. 
+    """
+    
     try:
         response = requests.get(f'{onos_base_url}/statistics/ports', auth=onos_auth)
         if response.status_code == 200:
@@ -215,7 +230,10 @@ def current_network_state():
     return devices, links, hosts, flows, port_stats, paths
 
 def write_dataframe_to_influx(df, measurement):
-    """Writes a DataFrame to InfluxDB with a given measurement name."""
+    """
+        Writes a DataFrame to InfluxDB with a given measurement name.
+    """
+    
     points = []
     timestamp = strftime("%Y%m%d_%H%M%S")  # ISO 8601 format
     for _, row in df.iterrows():
