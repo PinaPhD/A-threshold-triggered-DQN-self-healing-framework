@@ -53,7 +53,7 @@ onos_auth = (username, password)
 url = "http://192.168.0.7:8086"  #InfluxDB URL (Host Server)
 token = "qkc2ZrwHen0ZzaPyBisN9E5bZYGNmhwO9R-ATu077_ieVy9ZqrhxqvHlzmn8zS2A5iCiBTGmSUM4hz9flPX6yg=="  # InfluxDB API Token
 org = "Knowledge_Base"   #InfluxDB Organization
-bucket = "Observe_Module_KB"   #Influx Bucket Name
+bucket = "Onos_Metrics"   #Influx Bucket Name
 
 
 # Initialize InfluxDB client
@@ -325,8 +325,8 @@ if __name__ == "__main__":
             
             new_df.to_csv(csv_file, mode='a', header=False, index=False)
             
-            # Wait for 1 minute before the next iteration
-            time.sleep(60)
+            # Send data samples every second -- before the next iteration
+            time.sleep(1)
 
     
     except KeyboardInterrupt:
