@@ -154,6 +154,7 @@ def get_port_statistics():
         print(f"An error occurred while fetching network port statistics: {e}")
 
 
+
 #For the paths
 def get_devices_fp():
     response = requests.get(f'{onos_base_url}/devices', auth=onos_auth)
@@ -219,6 +220,10 @@ def src_to_dest_paths():
     df_paths = pd.DataFrame(paths_list)
     return df_paths
 
+'''
+    Determining the switch utilization based on the port statistics captured from ONOS SDN Controller
+'''
+
 def current_network_state():
     devices = get_devices()
     links = get_links()
@@ -226,13 +231,14 @@ def current_network_state():
     flows = get_flows()
     port_stats = get_port_statistics()
     paths = src_to_dest_paths()
-        
+       
     return devices, links, hosts, flows, port_stats, paths
 
+
 def write_dataframe_to_influx(df, measurement):
-    """
+    '''
         Writes a DataFrame to InfluxDB with a given measurement name.
-    """
+    '''
     
     points = []
     timestamp = strftime("%Y%m%d_%H%M%S")  # ISO 8601 format
@@ -315,7 +321,7 @@ if __name__ == "__main__":
                 })
             
             new_df = pd.DataFrame(new_rows)
-            #link_port_stats_df = pd.concat([link_port_stats_df, new_df], ignore_index=True)
+            link_port_stats_df = pd.concat([link_port_stats_df, new_df], ignore_index=True)
         
             # Write updated link_port_stats_df to InfluxDB
             print(f'\nWriting port statistics to influxdB bucket: {bucket} at: {timestamp}')

@@ -8,17 +8,22 @@
     disruptions.
 '''
 
-import numpy as np                             
+#Connect to the OBSERVE Module
+from Observe import current_network_state      # Loads the current network state from the OBSERVE Module
+
+
+#Importing the relevant modules
+import numpy as np     
+import pandas as pd                        
 import tensorflow as tf                        # Use TensorFlow for building and training the neural network
 from tensorflow.keras.models import Sequential # Sequential is used to build the model layer by layer
 from tensorflow.keras.layers import Dense      # Type of neural network (Dense)
 from collections import deque                  # Deque creates a memory buffer to store experiences
 import random                                  # Random number generation (For the Agent exploration process)
-from Observe import current_network_state      # Loads the current network state from the OBSERVE Module
+from datetime import datetime
 
 
-
-# Define parameters
+# Define DQN self-healing module parameters
 state_size = 178         # Capture the number of inputs (or features) the model takes
 action_size = 900          # Set of discrete actions that the Agent can take
 gamma = 0.995            # Discounted rate for future rewards
@@ -121,6 +126,7 @@ class SelfHealingAgent:
         done = False
         return next_state, reward, done
     
+    
 if __name__ == "__main__":
     
     '''
@@ -140,18 +146,38 @@ if __name__ == "__main__":
         Obtain the real-time network state (s_t) from the knowledge base defining the traffic matrix and temperature matrix
         Call the self-healing function to use these values as an input
     '''
+    while True:
+        
+        devices, links, hosts, flows, port_stats, paths, current_port_stats, delta_port_stats = current_network_state()
+            
+        #Device utilization
+        delta_port_stats['Utilization'] = delta_port_stats['BytesSent'] / (delta_port_stats['BytesSent'] + delta_port_stats['BytesReceived'])
+        over_utilized = delta_port_stats[delta_port_stats['Utilization'] > u_thr]
     
-    devices, links, hosts, flows, port_stats, paths = current_network_state()
+        if not over_utilized.empty:
+            print(f"Warning: Some devices are over-utilized: {over_utilized[['device', 'Utilization']]}")
+        
+        # Store the current port stats for the next iteration
+        previous_port_stats = current_port_stats.copy()
+        
+        # Sleep for a while before the next iteration
+        time.sleep(5)   #Every 5 seconds
+    
+    
+        
+    
+    #Action Space Row vector (RR)
+    pwt = len(paths)       # Number of paths between the select source and destination 
+    fht = len(flows)       # Number of flows transmitting the ETH-TYPE for a particular service type classification (IEC61850SV, GOOSE, IPV4-->>TCP/UDP, etc...)
+    
+    #DNN Input parameters
+    state_size = len(devices)+len(links)+len(hosts)         # Capture the number of inputs (or features) the model takes
+    action_size = pwt+fht                                   # Set of discrete actions that the Agent can take
+    
     
     #Choosing src-dest pairs for the study based on the offshore WPP data services in Table 2.
     
-
-    pwt = len(paths)      #Number of paths between the select source and destination 
-    fht = len(flows)       #Number of flows transmitting the ETH-TYPE for a particular service type classification (IEC61850SV, GOOSE, IPV4-->>TCP/UDP, etc...)
     
-    state_size = len(devices)+len(links)+len(hosts)         # Capture the number of inputs (or features) the model takes
-    action_size = pwt+fht                                   # Set of discrete actions that the Agent can take
-
     def get_current_state():
         u_t = np.random.uniform(0, 0.99, 78)        # The link utilization (from OBSERVE Module)
         l_t = np.random.uniform(0, 10, 60)          # The path latency (from OBSERVE Module)

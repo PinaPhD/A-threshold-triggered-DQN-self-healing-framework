@@ -15,19 +15,19 @@ TIME_STEPS = 100  # Number of simulation steps
 COOLING_RATE = 0.5  # Rate at which the HVAC unit cools down a switch (°C per time step)
 HEATING_RATE = 0.3  # Rate at which the HVAC unit heats up a switch (°C per time step)
 
-# Create a list of switch identifiers from the provided file
-switches = [
-    'of:000000000000000c', 'of:000000000000000d', 'of:000000000000000a', 'of:000000000000000b',
-    'of:000000000000000e', 'of:000000000000000f', 'of:0000000000000010', 'of:0000000000000011',
-    'of:0000000000000014', 'of:0000000000000015', 'of:0000000000000012', 'of:0000000000000013',
-    'of:0000000000000018', 'of:0000000000000019', 'of:0000000000000016', 'of:0000000000000017',
-    'of:000000000000001a', 'of:000000000000001d', 'of:000000000000001e', 'of:000000000000001b',
-    'of:000000000000001c', 'of:000000000000001f', 'of:0000000000000021', 'of:0000000000000022',
-    'of:0000000000000020', 'of:0000000000000003', 'of:0000000000000025', 'of:0000000000000004',
-    'of:0000000000000026', 'of:0000000000000023', 'of:0000000000000001', 'of:0000000000000024',
-    'of:0000000000000002', 'of:0000000000000007', 'of:0000000000000008', 'of:0000000000000005',
-    'of:0000000000000027', 'of:0000000000000028', 'of:0000000000000006', 'of:0000000000000009'
-]
+
+'''
+    Reading the device temperature values (Temperature Module) 
+'''
+#Connect to the OBSERVE Module
+from Observe import current_network_state      # Loads the current network state from the OBSERVE Module
+
+
+device_id = devices['id'].tolist()    
+#Assigning these switches temperature values
+temp_values = np.random.uniform(low=10, high=30, size=len(device_id))
+device_temp = pd.DataFrame({'id': device_id, 'temperature': temp_values})
+#device_temp   #Viewing the device_temp DataFrame
 
 # Initialize temperatures for each switch (randomly between 10 and 35°C)
 current_temperatures = np.random.uniform(10, 35, size=NUM_SWITCHES)
