@@ -14,8 +14,7 @@ from tensorflow.keras.models import Sequential # Sequential is used to build the
 from tensorflow.keras.layers import Dense      # Type of neural network (Dense)
 from collections import deque                  # Deque creates a memory buffer to store experiences
 import random                                  # Random number generation (For the Agent exploration process)
-from Observe import current_network_state  # Loads the current network state from the OBSERVE Module
-
+from Observe import current_network_state      # Loads the current network state from the OBSERVE Module
 
 
 
@@ -80,8 +79,8 @@ class DQNAgent:
     def update_target_model(self):
         self.target_model.set_weights(self.model.get_weights())
 
-# Threshold-triggered DQN self-healing process
-# Threshold-triggered DQN self-healing process
+
+# A threshold-triggered DQN self-healing process
 class SelfHealingAgent:
     def __init__(self, qos_requirements):
         self.qos_sla_requirements = qos_requirements  # Corrected variable name
@@ -129,7 +128,7 @@ if __name__ == "__main__":
         The current network state is compared against these thresholds to check for violations.
     '''
     
-    t_thr = np.arange(18, 27, 0.01)                 #The nominal temperature operating range [ASHRAE,2016]
+    t_thr = np.arange(18, 27.001, 0.01)             #The nominal temperature operating range [ASHRAE,2016]
     l_thr = 3                                       #Path latency threshold
     u_thr = 0.8                                     #Link Utilization threshold
     qos_sla_requirements = (l_thr, u_thr, t_thr)    #Latency (ms), utilization (%), and temperature (0C) thresholds respectively
@@ -143,16 +142,21 @@ if __name__ == "__main__":
     '''
     
     devices, links, hosts, flows, port_stats, paths = current_network_state()
+    
+    #Choosing src-dest pairs for the study based on the offshore WPP data services in Table 2.
+    
 
     pwt = len(paths)      #Number of paths between the select source and destination 
     fht = len(flows)       #Number of flows transmitting the ETH-TYPE for a particular service type classification (IEC61850SV, GOOSE, IPV4-->>TCP/UDP, etc...)
     
+    state_size = len(devices)+len(links)+len(hosts)         # Capture the number of inputs (or features) the model takes
+    action_size = pwt+fht                                   # Set of discrete actions that the Agent can take
 
     def get_current_state():
-        u_t = np.random.uniform(0, 0.99, 78)   # The link utilization (from OBSERVE Module)
-        l_t = np.random.uniform(0, 10, 60)     # The path latency (from OBSERVE Module)
-        tau_t = np.random.uniform(-40,50,40)             # The device temperature profiles
-        return l_t, u_t, tau_t  # Fixed return variables
+        u_t = np.random.uniform(0, 0.99, 78)        # The link utilization (from OBSERVE Module)
+        l_t = np.random.uniform(0, 10, 60)          # The path latency (from OBSERVE Module)
+        tau_t = np.random.uniform(-40,50,40)        # The device temperature profiles
+        return l_t, u_t, tau_t                      # Fixed return variables
     
     #self_healing_agent.run(get_current_state)
 
