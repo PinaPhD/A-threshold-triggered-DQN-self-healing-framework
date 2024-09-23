@@ -14,11 +14,14 @@ from tensorflow.keras.models import Sequential # Sequential is used to build the
 from tensorflow.keras.layers import Dense      # Type of neural network (Dense)
 from collections import deque                  # Deque creates a memory buffer to store experiences
 import random                                  # Random number generation (For the Agent exploration process)
+from Observe import current_network_state  # Loads the current network state from the OBSERVE Module
+
+
 
 
 # Define parameters
 state_size = 178         # Capture the number of inputs (or features) the model takes
-action_size = 5          # Set of discrete actions that the Agent can take
+action_size = 900          # Set of discrete actions that the Agent can take
 gamma = 0.995            # Discounted rate for future rewards
 epsilon = 1.0            # Initial Exploration rate
 epsilon_min = 0.01       # Minimum value for the Exploration rate 
@@ -122,21 +125,36 @@ class SelfHealingAgent:
 if __name__ == "__main__":
     
     '''
-        Create the customized environment based on the violation thresholds from the ABSTRACTION module
-        Obtain the real-time network state (s_t) from the knowledge base defining the traffic matrix and temperature matrix
-        Call the self-healing function to use these values as an input 
+        From the ABSTRACTION Module; the path latency, link utilization, and temperature thresholds are defined. 
+        The current network state is compared against these thresholds to check for violations.
     '''
-    t_thr = np.arange(18, 27, 0.01)
-    qos_sla_requirements = (3, 0.8, t_thr)  # Latency, utilization, and temperature thresholds respectively
-    self_healing_agent = SelfHealingAgent(qos_sla_requirements)
     
+    t_thr = np.arange(18, 27, 0.01)                 #The nominal temperature operating range [ASHRAE,2016]
+    l_thr = 3                                       #Path latency threshold
+    u_thr = 0.8                                     #Link Utilization threshold
+    qos_sla_requirements = (l_thr, u_thr, t_thr)    #Latency (ms), utilization (%), and temperature (0C) thresholds respectively
+    self_healing_agent = SelfHealingAgent(qos_sla_requirements)
+        
+    
+    '''
+        Reading the current network state from the OBSERVE Module
+        Obtain the real-time network state (s_t) from the knowledge base defining the traffic matrix and temperature matrix
+        Call the self-healing function to use these values as an input
+    '''
+    
+    devices, links, hosts, flows, port_stats, paths = current_network_state()
+
+    pwt = len(paths)      #Number of paths between the select source and destination 
+    fht = len(flows)       #Number of flows transmitting the ETH-TYPE for a particular service type classification (IEC61850SV, GOOSE, IPV4-->>TCP/UDP, etc...)
+    
+
     def get_current_state():
         u_t = np.random.uniform(0, 0.99, 78)   # The link utilization (from OBSERVE Module)
         l_t = np.random.uniform(0, 10, 60)     # The path latency (from OBSERVE Module)
         tau_t = np.random.uniform(-40,50,40)             # The device temperature profiles
         return l_t, u_t, tau_t  # Fixed return variables
     
-    self_healing_agent.run(get_current_state)
+    #self_healing_agent.run(get_current_state)
 
         
         
