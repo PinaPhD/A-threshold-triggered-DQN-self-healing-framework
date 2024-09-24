@@ -213,7 +213,6 @@ def current_network_state():
        
     return devices, links, hosts, flows, port_stats, paths
 
-
 # Function to connect to MySQL database
 def connect_to_mysql():
     
@@ -230,7 +229,6 @@ def connect_to_mysql():
     except Error as e:
         logging.error(f"Error connecting to MySQL Database: {e}")
         return None
-
 
 #Inserting Devices into mysql database
 def insert_devices_to_mysql(devices_df, connection):
@@ -422,7 +420,6 @@ def insert_ports(ports_df, connection):
     
     finally:
         cursor.close()
-
 
 #Inserting Network Links into mysql database
 def insert_network_links(network_links_df, connection):
