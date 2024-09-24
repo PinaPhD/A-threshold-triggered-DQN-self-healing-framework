@@ -283,8 +283,7 @@ def insert_devices_to_mysql(devices_df, connection):
     
     finally:
         cursor.close()
-        
-        
+              
 #Inserting Flows into mysql database        
 def insert_flows_to_mysql(flows_df, connection):
     """
@@ -386,16 +385,156 @@ def insert_hosts_to_mysql(hosts_df, connection):
     finally:
         cursor.close()
 
+#Inserting Ports into mysql database
+def insert_ports(ports_df, connection):
+    """
+    Inserts port data from the DataFrame into the ports table in MySQL.
+    """
+    try:
+        cursor = connection.cursor()
+
+        insert_query = """
+        REPLACE INTO ports (port_identifier, device_name, port_number)
+        VALUES (%s, %s, %s)
+        """
+        
+        # Iterate over the DataFrame and insert each row
+        for index, row in ports_df.iterrows():
+            data_tuple = (
+                row['port_identifier'],
+                row['device_name'],
+                row['port_number']
+            )
+            cursor.execute(insert_query, data_tuple)
+
+        # Commit the transaction after inserting all rows
+        connection.commit()
+
+        logging.info("WFF OSS Network Device ports inserted successfully in the MySQL database.")
+    
+    except mysql.connector.Error as e:
+        logging.error(f"Failed to insert port data: {e}")
+        connection.rollback()
+    
+    finally:
+        cursor.close()
+
+#Inserting Network Links into mysql database
+def insert_network_links(network_links_df, connection):
+    """
+    Inserts network link data from the DataFrame into the network_links table in MySQL.
+    """
+    try:
+        cursor = connection.cursor()
+
+        insert_query = """
+        REPLACE INTO network_links (link_id, src_port_identifier, dest_port_identifier)
+        VALUES (%s, %s, %s)
+        """
+        
+        # Iterate over the DataFrame and insert each row
+        for index, row in network_links_df.iterrows():
+            data_tuple = (
+                row['link_id'],
+                row['src_port_identifier'],
+                row['dest_port_identifier']
+            )
+            cursor.execute(insert_query, data_tuple)
+
+        # Commit the transaction after inserting all rows
+        connection.commit()
+
+        logging.info("WFF OSS network links inserted successfully in the MySQL database.")
+    
+    except mysql.connector.Error as e:
+        logging.error(f"Failed to insert network link data: {e}")
+        connection.rollback()
+    
+    finally:
+        cursor.close()
+
+def insert_link_port_stats(link_port_stats_df, connection):
+    """
+    Inserts link port statistics from the DataFrame into the link_port_stats table in MySQL.
+    """
+    try:
+        cursor = connection.cursor()
+
+        insert_query = """
+        REPLACE INTO link_port_stats (link_stats_id, link_id, timestamp, PacketsReceived, PacketsSent, 
+                                      BytesReceived, BytesSent, PacketsRxDropped, PacketsTxDropped, 
+                                      PacketsRxErrors, PacketsTxErrors)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        
+        # Iterate over the DataFrame and insert each row
+        for index, row in link_port_stats_df.iterrows():
+            data_tuple = (
+                row['link_stats_id'],
+                row['link_id'],
+                row['timestamp'],
+                row['PacketsReceived'],
+                row['PacketsSent'],
+                row['BytesReceived'],
+                row['BytesSent'],
+                row['PacketsRxDropped'],
+                row['PacketsTxDropped'],
+                row['PacketsRxErrors'],
+                row['PacketsTxErrors']
+            )
+            cursor.execute(insert_query, data_tuple)
+
+        # Commit the transaction after inserting all rows
+        connection.commit()
+
+        logging.info("link port statistics inserted successfully in the MySQL database.")
+    
+    except mysql.connector.Error as e:
+        logging.error(f"Failed to insert link port statistics: {e}")
+        connection.rollback()
+    
+    finally:
+        cursor.close()
+
 
 if __name__ == "__main__":
     try:
         # Reading the current network state
         devices, links, hosts, flows, port_stats, paths = current_network_state()
 
+        '''
+            Accessing the network links and port statistics to determine the network utilization
+        '''
+        # Create Port DataFrame
+        ports = []
+        for index, row in links.iterrows():
+            src_device, src_port = row['src']['device'], row['src']['port']
+            dest_device, dest_port = row['dst']['device'], row['dst']['port']
+            ports.append({'port_identifier': f'{src_device}_{src_port}', 'device_name': src_device, 'port_number': src_port})
+            ports.append({'port_identifier': f'{dest_device}_{dest_port}', 'device_name': dest_device, 'port_number': dest_port})
+        
+        port_df = pd.DataFrame(ports).drop_duplicates().reset_index(drop=True)
+
+        # Create Network Links DataFrame
+        network_links = []
+        for index, row in links.iterrows():
+            src_device, src_port = row['src']['device'], row['src']['port']
+            dest_device, dest_port = row['dst']['device'], row['dst']['port']
+            link_id = f'{src_device}_{src_port}_to_{dest_device}_{dest_port}'
+            src_port_identifier = f'{src_device}_{src_port}'
+            dest_port_identifier = f'{dest_device}_{dest_port}'
+            network_links.append({'link_id': link_id, 'src_port_identifier': src_port_identifier, 'dest_port_identifier': dest_port_identifier})
+        
+        network_links_df = pd.DataFrame(network_links)
+
+        # Initialize DataFrame to store link port statistics
+        link_port_stats_df = pd.DataFrame(columns=['link_stats_id', 'link_id', 'timestamp', 'PacketsReceived', 'PacketsSent', 'BytesReceived', 'BytesSent', 'PacketsRxDropped', 'PacketsTxDropped', 'PacketsRxErrors', 'PacketsTxErrors'])
+        
         
         '''
             Saving data into the mysql Database
         '''
+        
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # ISO 8601 format
         # Connect to MySQL Database
         mysql_conn = connect_to_mysql()
@@ -410,8 +549,19 @@ if __name__ == "__main__":
                 insert_flows_to_mysql(flows, mysql_conn)
                 #print(f'\nInserting flows to the MySQL flows table at: {timestamp}')
                 
-                # Insert or replace hosts data into the MySQL table
+                # Insert hosts data into the MySQL table
                 insert_hosts_to_mysql(hosts, mysql_conn)
+                
+                #Insert ports into the MySQL table
+                insert_ports(port_df, mysql_conn)
+
+                #Insert network links into the MySQL table
+                insert_network_links(network_links_df, mysql_conn)
+
+                #Insert the link statistics into the MySQL table
+                insert_link_port_stats(link_port_stats_df, mysql_conn)
+
+                
                 # Send data samples every second -- before the next iteration
                 time.sleep(10)
             
