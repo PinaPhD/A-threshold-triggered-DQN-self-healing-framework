@@ -385,20 +385,24 @@ def insert_hosts_to_mysql(hosts_df, connection):
     finally:
         cursor.close()
 
-#Inserting Ports into mysql database
+# Inserting Ports into MySQL database
 def insert_ports(ports_df, connection):
     """
     Inserts port data from the DataFrame into the ports table in MySQL.
+    If a row with the same port_identifier exists, it will be updated instead of replaced.
     """
     try:
         cursor = connection.cursor()
 
         insert_query = """
-        REPLACE INTO ports (port_identifier, device_name, port_number)
+        INSERT INTO ports (port_identifier, device_name, port_number)
         VALUES (%s, %s, %s)
+        ON DUPLICATE KEY UPDATE 
+        device_name = VALUES(device_name), 
+        port_number = VALUES(port_number)
         """
         
-        # Iterate over the DataFrame and insert each row
+        # Iterate over the DataFrame and insert or update each row
         for index, row in ports_df.iterrows():
             data_tuple = (
                 row['port_identifier'],
@@ -410,14 +414,15 @@ def insert_ports(ports_df, connection):
         # Commit the transaction after inserting all rows
         connection.commit()
 
-        logging.info("WFF OSS Network Device ports inserted successfully in the MySQL database.")
+        logging.info("Ports inserted/updated successfully in the MySQL database.")
     
     except mysql.connector.Error as e:
-        logging.error(f"Failed to insert port data: {e}")
+        logging.error(f"Failed to insert or update port data: {e}")
         connection.rollback()
     
     finally:
         cursor.close()
+
 
 #Inserting Network Links into mysql database
 def insert_network_links(network_links_df, connection):
