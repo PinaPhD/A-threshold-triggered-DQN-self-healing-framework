@@ -14,7 +14,10 @@ import logging
 import pandas as pd
 from time import strftime
 from datetime import datetime
-import os
+#import os
+import json  # Import JSON module to convert dict to string
+import mysql.connector
+from mysql.connector import Error
 
 
 '''
@@ -40,12 +43,6 @@ password = password if password else 'rocks'
 onos_auth = (username, password)
 
 
-'''
-        Setting up the InfluxDB Connection
-        Connection via TCP/8086 with API Token Authentication
-        Bucket name: onos_metrics
-        Organization: Knowledge_Base
-'''
 
 def get_devices():
     """ 
@@ -217,11 +214,177 @@ def current_network_state():
     return devices, links, hosts, flows, port_stats, paths
 
 
-def write_dataframe_to_mysql(df, measurement):
-    '''
-        Writes a DataFrame to InfluxDB with a given measurement name.
-    '''
+# Function to connect to MySQL database
+def connect_to_mysql():
+    
+    try:
+        connection = mysql.connector.connect(
+            host='localhost',  # Update with your MySQL host if different
+            database='Orsted',  # Your database name
+            user='root',  # Your MySQL username
+            password='50acresIsinya'  # Your MySQL password
+        )
+        if connection.is_connected():
+            logging.info('Connected to MySQL Database')
+            return connection
+    except Error as e:
+        logging.error(f"Error connecting to MySQL Database: {e}")
+        return None
 
+
+#Inserting Devices into mysql database
+def insert_devices_to_mysql(devices_df, connection):
+    
+    
+    """
+    Inserts device data from the DataFrame into the devices table in MySQL.
+    Skips the insertion if the ID already exists.
+    """
+    
+    try:
+        cursor = connection.cursor()
+
+        replace_query = """
+        REPLACE INTO devices 
+        (id, type, available, role, mfr, hw, sw, serial, driver, chassisId, lastUpdate, humanReadableLastUpdate, annotations) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        
+        # Iterate over the DataFrame and insert each row into the MySQL table
+        for index, row in devices_df.iterrows():        
+
+            # Data tuple for insertion
+            data_tuple = (
+                row.get('id', None),
+                row.get('type', None),
+                row.get('available', None) == 'TRUE',  # Convert to boolean
+                row.get('role', None),
+                row.get('mfr', None),
+                row.get('hw', None),
+                row.get('sw', None),
+                row.get('serial', None),
+                row.get('driver', None),
+                row.get('chassisId', None),
+                int(row.get('lastUpdate', 0)),  # Convert to int for BIGINT
+                row.get('humanReadableLastUpdate', None),
+                json.dumps(row.get('annotations', {}))
+             )
+
+            cursor.execute(replace_query, data_tuple)
+
+        # Commit the transaction after inserting all rows
+        connection.commit()
+
+        logging.info("WFF OSS Devices inserted successfully into the MySQL database.")
+    
+    except mysql.connector.Error as e:
+        logging.error(f"Failed to insert device data into MySQL table: {e}")
+        connection.rollback()  # Rollback in case of error
+    
+    finally:
+        cursor.close()
+        
+        
+#Inserting Flows into mysql database        
+def insert_flows_to_mysql(flows_df, connection):
+    """
+    Inserts flow data from the DataFrame into the flow table in the MySQL Orsted database.
+    Assumes the 'flow' table has the following schema:
+    | id (AUTO_INCREMENT) | tableId | appId | groupId | priority | timeout | isPermanent | 
+    | deviceId | state | life | packets | bytes | liveType | lastSeen | treatment | selector |
+    """
+    
+    try:
+        cursor = connection.cursor()
+
+        replace_query = """
+        REPLACE INTO flows 
+        (id, tableId, appId, groupId, priority, timeout, isPermanent, deviceId, state, life, packets, bytes, liveType, lastSeen, treatment, selector) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        
+        # Iterate over the DataFrame and insert each row into the MySQL table
+        for index, row in flows_df.iterrows():
+           
+            data_tuple = (
+                row.get('id', None),
+                row.get('tableId', None),
+                row.get('appId', None),
+                row.get('groupId', None),
+                row.get('priority', None),
+                row.get('timeout', None),
+                row.get('isPermanent', None),
+                row.get('deviceId', None),
+                row.get('state', None),
+                row.get('life', None),
+                row.get('packets', None),
+                row.get('bytes', None),
+                row.get('liveType', None),
+                row.get('lastSeen', None),
+                json.dumps(row.get('treatment', {})),  # Convert dict to JSON string
+                json.dumps(row.get('selector', {}))   # Convert dict to JSON string
+            )
+            
+            cursor.execute(replace_query, data_tuple)
+
+        # Commit the transaction after inserting all rows
+        connection.commit()
+
+        logging.info("SDNC flows inserted successfully into the MySQL database.")
+    
+    except mysql.connector.Error as e:
+        logging.error(f"Failed to insert flow data into MySQL table: {e}")
+        connection.rollback()  # Rollback in case of error
+    
+    finally:
+        cursor.close()
+
+#Inserting Hosts into mysql database
+def insert_hosts_to_mysql(hosts_df, connection):
+    """
+    Inserts or replaces data into the hosts table in MySQL.
+    If a row with the same id already exists, it will be replaced.
+    """
+    try:
+        cursor = connection.cursor()
+
+        replace_query = """
+        REPLACE INTO hosts 
+        (id, mac, vlan, innerVlan, outerTpid, configured, ipAddresses, locations) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        
+        # Iterate over the DataFrame and insert or replace each row into the MySQL table
+        for index, row in hosts_df.iterrows():
+            # Parse the ipAddresses and locations fields to JSON
+            ipAddresses = json.dumps(row.get('ipAddresses', []))
+            locations = json.dumps(row.get('locations', []))
+
+            # Data tuple for insertion
+            data_tuple = (
+                row.get('id', None),
+                row.get('mac', None),
+                row.get('vlan', None),
+                row.get('innerVlan', None),
+                row.get('outerTpid', None),
+                row.get('configured', None),
+                ipAddresses,
+                locations
+            )
+            
+            cursor.execute(replace_query, data_tuple)
+
+        # Commit the transaction after inserting all rows
+        connection.commit()
+
+        logging.info("WFF OSS hosts inserted successfully into the MySQL database.")
+    
+    except mysql.connector.Error as e:
+        logging.error(f"Failed to insert flow data into MySQL table: {e}")
+        connection.rollback()  # Rollback in case of error
+    
+    finally:
+        cursor.close()
 
 
 if __name__ == "__main__":
@@ -229,100 +392,36 @@ if __name__ == "__main__":
         # Reading the current network state
         devices, links, hosts, flows, port_stats, paths = current_network_state()
 
-        # For flows (permanent and temporary flows are identified)
-        dp_to_cp = flows[flows['appId'] == 'org.onosproject.core']  # Permanent
-        dp_to_dp = flows[flows['appId'] == 'org.onosproject.fwd']   # Renewed periodically/Temporary
-
-        # Create Port DataFrame
-        ports = []
-        for index, row in links.iterrows():
-            src_device, src_port = row['src']['device'], row['src']['port']
-            dest_device, dest_port = row['dst']['device'], row['dst']['port']
-            ports.append({'port_identifier': f'{src_device}_{src_port}', 'device_name': src_device, 'port_number': src_port})
-            ports.append({'port_identifier': f'{dest_device}_{dest_port}', 'device_name': dest_device, 'port_number': dest_port})
         
-        port_df = pd.DataFrame(ports).drop_duplicates().reset_index(drop=True)
-
-        # Create Network Links DataFrame
-        network_links = []
-        for index, row in links.iterrows():
-            src_device, src_port = row['src']['device'], row['src']['port']
-            dest_device, dest_port = row['dst']['device'], row['dst']['port']
-            link_id = f'{src_device}_{src_port}_to_{dest_device}_{dest_port}'
-            src_port_identifier = f'{src_device}_{src_port}'
-            dest_port_identifier = f'{dest_device}_{dest_port}'
-            network_links.append({'link_id': link_id, 'src_port_identifier': src_port_identifier, 'dest_port_identifier': dest_port_identifier})
+        '''
+            Saving data into the mysql Database
+        '''
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # ISO 8601 format
+        # Connect to MySQL Database
+        mysql_conn = connect_to_mysql()
         
-        network_links_df = pd.DataFrame(network_links)
-
-        # Write initial data to InfluxDB
-        # write_dataframe_to_influx(port_df, 'ports')
-        # write_dataframe_to_influx(network_links_df, 'network_links')
-
-        # Initialize DataFrame to store link port statistics
-        link_port_stats_df = pd.DataFrame(columns=['link_stats_id', 'link_id', 'timestamp', 'PacketsReceived', 'PacketsSent', 'BytesReceived', 'BytesSent', 'PacketsRxDropped', 'PacketsTxDropped', 'PacketsRxErrors', 'PacketsTxErrors'])
-        
-        #Writing to csv file
-        # Define the file path for storing port stats
-        csv_file = 'Data/port_stats.csv'
-         
-        # Initialize the CSV file with headers if it doesn't exist
-        if not os.path.isfile(csv_file):
-           with open(csv_file, 'w') as f:
-               f.write('link_stats_id, link_id, timestamp, PacketsReceived, PacketsSent, BytesReceived, BytesSent, PacketsRxDropped, PacketsTxDropped, PacketsRxErrors, PacketsTxErrors\n')
-
-
-        while True:
-            # Update link_port_stats_df with new data
-            port_stats = get_port_statistics()
-            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # ISO 8601 format
-            #timestamp = pd.Timestamp.now()   #Captures the time when the record is being stored
-            new_rows = []
-            for index, row in port_stats.iterrows():
-                new_rows.append({
-                    'link_stats_id': f'{row["device"]}_{row["port"]}_{timestamp}',
-                    'link_id': f'{row["device"]}_{row["port"]}',
-                    'timestamp': timestamp,
-                    'PacketsReceived': float(row.get('packetsReceived', 0)),
-                    'PacketsSent': float(row.get('packetsSent', 0)),
-                    'BytesReceived': float(row.get('bytesReceived', 0)),
-                    'BytesSent': float(row.get('bytesSent', 0)),
-                    'PacketsRxDropped': float(row.get('packetsRxDropped', 0)),
-                    'PacketsTxDropped': float(row.get('packetsTxDropped', 0)),
-                    'PacketsRxErrors': float(row.get('packetsRxErrors', 0)),
-                    'PacketsTxErrors': float(row.get('packetsTxErrors', 0))
-                })
+        if mysql_conn:
             
-            new_df = pd.DataFrame(new_rows)
-            link_port_stats_df = pd.concat([link_port_stats_df, new_df], ignore_index=True)
-        
-            # Write updated link_port_stats_df to InfluxDB
-            print(f'\nWriting port statistics to influxdB bucket: {bucket} at: {timestamp}')
-            write_dataframe_to_influx(new_df, 'link_port_stats')
+            while True:
+                # Insert devices into the MySQL table
+                insert_devices_to_mysql(devices, mysql_conn)
+                
+                # Insert the flow data into the MySQL flow table
+                insert_flows_to_mysql(flows, mysql_conn)
+                #print(f'\nInserting flows to the MySQL flows table at: {timestamp}')
+                
+                # Insert or replace hosts data into the MySQL table
+                insert_hosts_to_mysql(hosts, mysql_conn)
+                # Send data samples every second -- before the next iteration
+                time.sleep(10)
             
-            #Write to a csv file (Backup)
-            
-            new_df.to_csv(csv_file, mode='a', header=False, index=False)
-            
-            # Send data samples every second -- before the next iteration
-            time.sleep(1)
-
-    
     except KeyboardInterrupt:
-        # Create a timestamp
-        timestamp = strftime("%Y%m%d_%H%M%S")
-        file_name = f'Data/network_data_{timestamp}.xlsx'
-        with pd.ExcelWriter(file_name) as writer:
-            devices.to_excel(writer, sheet_name='Devices')
-            links.to_excel(writer, sheet_name='Links')
-            hosts.to_excel(writer, sheet_name='Hosts')
-            dp_to_dp.to_excel(writer, sheet_name='FD_to_FD_Flows')
-            dp_to_cp.to_excel(writer, sheet_name='FD_to_SDNC_Flows')
-            paths.to_excel(writer, sheet_name='Paths')
-            port_stats.to_excel(writer, sheet_name='Port_stats')
-            port_df.to_excel(writer, sheet_name='Port')
-            network_links_df.to_excel(writer, sheet_name='Network_Links')
-            link_port_stats_df.to_excel(writer, sheet_name='Link_Port_Stats')
-            
-        print(f"\nData successfully sent to Knowledge Base and saved to {file_name}")
-        print('\n\nOBSERVE MODULE NOTICE \n\n Network Engineer has interrupted the process!')
+        
+        # Close MySQL connection when stopping the script
+        if mysql_conn and mysql_conn.is_connected():
+            mysql_conn.close()
+            logging.info('MySQL connection closed.')
+        logging.info('Process interrupted by the network engineer.')
+        
+        
+       
