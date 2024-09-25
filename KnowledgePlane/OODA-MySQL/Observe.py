@@ -12,7 +12,7 @@ import requests
 import time
 import logging
 import pandas as pd
-from time import strftime
+#from time import strftime
 from datetime import datetime
 #import os
 import json  # Import JSON module to convert dict to string
@@ -383,6 +383,54 @@ def insert_hosts_to_mysql(hosts_df, connection):
     finally:
         cursor.close()
 
+#Inserting the port statistics into mysql database
+def insert_port_statistics_to_mysql(port_stats_df, connection):
+    """
+    Inserts data into the port_statistics table in MySQL.
+    If a row with the same device and port already exists, it will be inserted with an auto-generated ID and timestamp.
+    """
+    try:
+        cursor = connection.cursor()
+
+        insert_query = """
+        INSERT INTO port_statistics 
+        (port, packetsReceived, packetsSent, bytesReceived, bytesSent, 
+        packetsRxDropped, packetsTxDropped, packetsRxErrors, packetsTxErrors, 
+        durationSec, device) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        
+        # Iterate over the DataFrame and insert each row into the MySQL table
+        for index, row in port_stats_df.iterrows():
+            # Data tuple for insertion
+            data_tuple = (
+                row.get('port', None),
+                row.get('packetsReceived', None),
+                row.get('packetsSent', None),
+                row.get('bytesReceived', None),
+                row.get('bytesSent', None),
+                row.get('packetsRxDropped', None),
+                row.get('packetsTxDropped', None),
+                row.get('packetsRxErrors', None),
+                row.get('packetsTxErrors', None),
+                row.get('durationSec', None),
+                row.get('device', None)
+            )
+            
+            cursor.execute(insert_query, data_tuple)
+
+        # Commit the transaction after inserting all rows
+        connection.commit()
+
+        logging.info("Port statistics inserted successfully into the MySQL database.")
+    
+    except mysql.connector.Error as e:
+        logging.error(f"Failed to insert port statistics into MySQL table: {e}")
+        connection.rollback()  # Rollback in case of error
+    
+    finally:
+        cursor.close()
+
 # Inserting Ports into MySQL database
 def insert_ports(ports_df, connection):
     """
@@ -412,7 +460,7 @@ def insert_ports(ports_df, connection):
         # Commit the transaction after inserting all rows
         connection.commit()
 
-        logging.info("Ports inserted/updated successfully in the MySQL database.")
+        logging.info("Ports inserted successfully in the MySQL database.")
     
     except mysql.connector.Error as e:
         logging.error(f"Failed to insert or update port data: {e}")
@@ -563,6 +611,9 @@ if __name__ == "__main__":
                 #Insert the link statistics into the MySQL table
                 insert_link_port_stats(link_port_stats_df, mysql_conn)
 
+                #Insert the port statistics into the MySQL table
+                insert_port_statistics_to_mysql(port_stats, mysql_conn)
+                
                 
                 # Send data samples every second -- before the next iteration
                 time.sleep(10)
