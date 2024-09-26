@@ -60,7 +60,7 @@ episodes = 1500          # Number of episodes for training
 reward_list = []
 cpu_usage_list = []
 memory_usage_list = []
-epsilon_list = []  # List to store epsilon decay
+epsilon_list = []  # store epsilon decay
 
 # Define the Deep Q-Network Model - Acts like the brain of the DECIDE Model that should perform self-healing
 def build_model():
@@ -125,8 +125,9 @@ class SelfHealingAgent:
         return latency_violated or utilization_violated or temperature_violated
 
     def run(self, get_current_state):
+        l_t, u_t, tau_t = get_current_state()
         for episode in range(episodes):
-            total_reward = 0  # Initialize reward
+            total_reward = (0.373*np.mean(l_t)+0.627*np.mean(u_t))  # Initialize reward
             l_t, u_t, tau_t = get_current_state()  # Get network state
             state = np.concatenate((l_t, u_t, tau_t))  # Concatenate the arrays
             state = np.reshape(state, [1, state_size])  # Reshape the state
