@@ -8,10 +8,14 @@ import mysql.connector
 import pandas as pd
 import matplotlib.pyplot as plt
 import time
+import numpy as np
 
 # Set the threshold for bytes received
 THRESHOLD = 190000000
 alpha =0.001   #Heat coefficient
+temp_init = np.full(40,18)   #Initial temperature value
+
+switch_temp = {}    #Create device to temperature values at different timesteps
 
 # Function to fetch the latest values from the view
 def fetch_latest_device_statistics():
@@ -89,6 +93,16 @@ if __name__ == "__main__":
 
         # Check for devices that exceed the threshold and calculate utilization
         exceeded_device_stats = check_switch_utilization(latest_device_statistics)
+        
+        #Create a temperature profile for our devices ()
+        #Read through for each device and its associated utilization
+        #for j in latest_device_statistics:
+            #latest_device_statistics['switch_utilization][j]
+        #Compute the temperature
+        #temperature = temp_init[j] + alpha*latest_device_statistics['switch_utilization'][j]  #scalar value
+        #temp_init[j] = temperature
+        #temp_array ={{timestep, device, temperature },...}
+        #switch_temp.append(temp_array)   
 
         # Append the exceeded stats to the historical data DataFrame
         historical_data = pd.concat([historical_data, exceeded_device_stats])
