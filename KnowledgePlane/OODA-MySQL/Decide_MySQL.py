@@ -10,7 +10,8 @@
 
 #Connect to the OBSERVE Module
 from Observe import current_network_state      # Loads the current network state from the OBSERVE Module
-
+#Connect to the Temperature Module
+from Temp import switch_temp                   #Reading the temperature values 
 '''
     Reading the current network state from the OBSERVE Module
     Obtain the real-time network state (s_t) from the knowledge base defining the traffic matrix and temperature matrix

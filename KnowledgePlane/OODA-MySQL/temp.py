@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
     Created on Tue Sep 05 14:11:18 2024
-    @Main Contributor:  León Navarro-Hilfiker
+    @Main Contributor: León Navarro-Hilfiker
     @Contributor: Agrippina Mwangi
 """
 import mysql.connector
@@ -10,21 +10,23 @@ import matplotlib.pyplot as plt
 import time
 import numpy as np
 
-# Set the threshold for bytes received
+# Set the threshold for bytes received and temperature limits
 THRESHOLD = 190000000
-alpha =0.001   #Heat coefficient
-temp_init = np.full(40,18)   #Initial temperature value
+alpha = 0.001                       # Heat coefficient
+temp_init = np.full(40, 18)         # Initial temperature value for each switch
+tau_thr_max = 27                    # Maximum temperature threshold
+tau_thr_min = 18                    # Minimum temperature threshold
 
-switch_temp = {}    #Create device to temperature values at different timesteps
+switch_temp = {}                    # Store device temperature values at different timesteps
 
 # Function to fetch the latest values from the view
 def fetch_latest_device_statistics():
     # Connect to the database
     conn = mysql.connector.connect(
-        host="localhost",        # e.g. "localhost" or IP address
-        user="root",    # e.g. "root"
-        password="50acresIsinya",# e.g. "password"
-        database="Orsted" # Name of the database containing the view
+        host="localhost",               # e.g. "localhost" or IP address
+        user="root",                    # e.g. "root"
+        password="50acresIsinya",       # e.g. "password"
+        database="Orsted"               # Name of the database containing the view
     )
     
     # Create a cursor to execute queries
@@ -41,77 +43,111 @@ def fetch_latest_device_statistics():
     
     # Fetch all rows and load them into a Pandas DataFrame
     rows = cursor.fetchall()
-    data = pd.DataFrame(rows)
+    switch_util = pd.DataFrame(rows)
 
     # Close the connection
     cursor.close()
     conn.close()
 
-    return data
+    return switch_util
 
 # Function to check switch utilization against the threshold
-def check_switch_utilization(data):
+def check_switch_utilization(switch_util):
     # Check which devices have exceeded the threshold
-    data['exceeds_threshold'] = data['total_bytesReceived'] > THRESHOLD
+    switch_util['exceeds_threshold'] = switch_util['total_bytesReceived'] > THRESHOLD
 
     # Calculate the percentage of utilization against the threshold
-    data['utilization_percentage'] = (data['total_bytesReceived'] / THRESHOLD) * 100
+    switch_util['utilization_percentage'] = (switch_util['total_bytesReceived'] / THRESHOLD) * 100
 
     # Filter the devices that exceeded the threshold
-    exceeded_devices = data[data['exceeds_threshold']]
+    exceeded_devices = switch_util[switch_util['exceeds_threshold']]
 
     return exceeded_devices[['timestamp', 'device', 'total_bytesReceived', 'utilization_percentage']]
 
-# Function to plot the time series
-def plot_exceeded_threshold(df):
+# Function to check switch temperature and manage cooling/heating systems
+def manage_temperature_and_traffic(switch_util, temp_init, switch_temp):
+    temperature = np.array(temp_init)
+
+    for i, row in switch_util.iterrows():
+        device = row['device']
+        timestamp = row['timestamp']
+        utilization = float(row['utilization_percentage'])
+        
+        # Compute the temperature based on utilization
+        temperature[i] += temp_init[i] + alpha * (utilization - 100) / 100
+
+        # Store the timestamp, device, and temperature in the switch_temp dictionary
+        if device not in switch_temp:
+            switch_temp[device] = []
+        switch_temp[device].append({'timestamp': timestamp, 'temperature': temperature[i]})
+
+        # Check if temperature exceeds thresholds
+        if temperature[i] > tau_thr_max:
+            print(f"Device {device} exceeds max temp: {temperature[i]}C.\nTriggering cooling system.")
+            # Insert logic for cooling system here, e.g., HVAC system adjustments
+
+        elif temperature[i] < tau_thr_min:
+            print(f"Device {device} below min temp: {temperature[i]}C.\nTriggering heating system.")
+            # Insert logic for heating system here, e.g., turning on heaters
+
+        else:
+            print(f"Device {device} is operating within nominal temperature: {temperature[i]}C. No action needed.")
+
+        # Trigger DQN actions for traffic engineering if temperature is unstable
+        if temperature[i] > tau_thr_max or temperature[i] < tau_thr_min:
+            print(f"Triggering DQN to choose optimal paths away from paths with device {device} due to temperature instability.")
+
+    return temperature
+
+# Function to plot the temperature data from switch_temp
+def plot_temperature_data(switch_temp):
     plt.figure(figsize=(10, 6))
 
-    for device in df['device'].unique():
-        device_data = df[df['device'] == device]
-        plt.plot(device_data['timestamp'], device_data['utilization_percentage'], label=device)
+    for device, temp_data in switch_temp.items():
+        timestamps = [entry['timestamp'] for entry in temp_data]
+        temperatures = [entry['temperature'] for entry in temp_data]
+        plt.plot(timestamps, temperatures, label=device)
 
     plt.xlabel('Timestamp')
-    plt.ylabel('Utilization Percentage (%)')
-    plt.title('Switch Utilization Exceeding Threshold Over Time')
+    plt.ylabel('Temperature (°C)')
+    plt.title('Switch Temperature Over Time')
     plt.legend()
     plt.xticks(rotation=45)
     plt.tight_layout()
     plt.show()
 
-# Main execution
-if __name__ == "__main__":
+
+def temperature_module():    
     # List to store data for plotting
     historical_data = pd.DataFrame()
+        
+    # Fetch the latest statistics from the view
+    latest_device_statistics = fetch_latest_device_statistics()
+
+    # Check for devices that exceed the threshold and calculate utilization
+    exceeded_device_stats = check_switch_utilization(latest_device_statistics)
+    
+    # Manage temperature and traffic engineering actions based on switch utilization
+    temp_values = manage_temperature_and_traffic(latest_device_statistics, temp_init, switch_temp)
+
+    # Append the exceeded stats to the historical data DataFrame
+    historical_data = pd.concat([historical_data, exceeded_device_stats])
+    
+    return latest_device_statistics, exceeded_device_stats, temp_values, historical_data
+
+# Main execution
+if __name__ == "__main__":
+    
 
     # Set the number of iterations (e.g., how many times to fetch data, 1 fetch per minute)
     num_iterations = 10
     interval = 10  # Interval between checks in seconds
-
-    for i in range(num_iterations):
-        # Fetch the latest statistics from the view
-        latest_device_statistics = fetch_latest_device_statistics()
-
-        # Check for devices that exceed the threshold and calculate utilization
-        exceeded_device_stats = check_switch_utilization(latest_device_statistics)
-        
-        #Create a temperature profile for our devices ()
-        #Read through for each device and its associated utilization
-        #for j in latest_device_statistics:
-            #latest_device_statistics['switch_utilization][j]
-        #Compute the temperature
-        #temperature = temp_init[j] + alpha*latest_device_statistics['switch_utilization'][j]  #scalar value
-        #temp_init[j] = temperature
-        #temp_array ={{timestep, device, temperature },...}
-        #switch_temp.append(temp_array)   
-
-        # Append the exceeded stats to the historical data DataFrame
-        historical_data = pd.concat([historical_data, exceeded_device_stats])
-
-        # Wait for the specified interval before fetching again
-        time.sleep(interval)
-
-    # Plot the time series of devices that exceeded the threshold
-    if not historical_data.empty:
-        plot_exceeded_threshold(historical_data)
+    
+    #Calling the temperature module function
+    latest_device_statistics, exceeded_device_stats, temp_values, historical_data = temperature_module()
+    
+    # Plot the temperature data from the switch_temp dictionary
+    if switch_temp:
+        plot_temperature_data(switch_temp)
     else:
-        print("No devices exceeded the threshold during the monitored period.")
+        print("No temperature data recorded during the monitored period.")
