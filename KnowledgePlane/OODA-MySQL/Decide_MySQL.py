@@ -11,7 +11,7 @@
 #Connect to the OBSERVE Module
 from Observe import current_network_state      # Loads the current network state from the OBSERVE Module
 #Connect to the Temperature Module
-from Temp import switch_temp                   #Reading the temperature values 
+from temp import temperature_module                   #Reading the temperature values 
 '''
     Reading the current network state from the OBSERVE Module
     Obtain the real-time network state (s_t) from the knowledge base defining the traffic matrix and temperature matrix
@@ -20,7 +20,8 @@ from Temp import switch_temp                   #Reading the temperature values
 
      
 devices, links, hosts, flows, port_stats, paths = current_network_state()
-
+latest_device_statistics, exceeded_device_stats, temp_values, historical_data = temperature_module()
+    
 # Action Space Row vector (RR)
 #pwt = len(paths)       # Number of paths between the select source and destination 
 #fht = len(flows)       # Number of flows transmitting the ETH-TYPE for a particular service type classification (IEC61850SV, GOOSE, IPV4-->>TCP/UDP, etc...)
@@ -211,10 +212,10 @@ if __name__ == "__main__":
     # Choosing src-dest pairs for the study based on the offshore WPP data services in Table 2.
     
     def get_current_state():
-        u_t = np.random.uniform(0, 0.99, 78)        # The link utilization (from OBSERVE Module)
-        l_t = np.random.uniform(0, 10, 60)          # The path latency (from OBSERVE Module)
-        tau_t = np.random.uniform(-15, 50, 40)      # The device temperature profiles
-        return l_t, u_t, tau_t                      # Fixed return variables
+        u_t = float(exceeded_device_stats['utilization_percentage'])       # The link utilization (from OBSERVE Module)
+        l_t = np.random.uniform(0, 0.99, 78)                               # The path latency (from OBSERVE Module)
+        tau_t = temp_values                                                # The device temperature profiles
+        return l_t, u_t, tau_t                                             # Fixed return variables
     
     self_healing_agent.run(get_current_state)
     

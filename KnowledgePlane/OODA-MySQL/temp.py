@@ -147,7 +147,7 @@ if __name__ == "__main__":
     latest_device_statistics, exceeded_device_stats, temp_values, historical_data = temperature_module()
     
     # Plot the temperature data from the switch_temp dictionary
-    if switch_temp:
-        plot_temperature_data(switch_temp)
-    else:
-        print("No temperature data recorded during the monitored period.")
+    #if switch_temp:
+     #   plot_temperature_data(switch_temp)
+    #else:
+     #   print("No temperature data recorded during the monitored period.")
