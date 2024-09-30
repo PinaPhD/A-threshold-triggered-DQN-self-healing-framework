@@ -66,7 +66,7 @@ def check_switch_utilization(switch_util):
 
 # Function to check switch temperature and manage cooling/heating systems
 def manage_temperature_and_traffic(switch_util, temp_init, switch_temp):
-    temperature = np.array(temp_init)
+    temperature = np.array(temp_init)   #Initializes the switch temperature
 
     for i, row in switch_util.iterrows():
         device = row['device']
@@ -74,7 +74,7 @@ def manage_temperature_and_traffic(switch_util, temp_init, switch_temp):
         utilization = float(row['utilization_percentage'])
         
         # Compute the temperature based on utilization
-        temperature[i] += temp_init[i] + alpha * (utilization - 100) / 100
+        temperature[i] += temp_init[i] + alpha * (utilization)/100
 
         # Store the timestamp, device, and temperature in the switch_temp dictionary
         if device not in switch_temp:
@@ -85,9 +85,11 @@ def manage_temperature_and_traffic(switch_util, temp_init, switch_temp):
         if temperature[i] > tau_thr_max:
             print(f"Device {device} exceeds max temp: {temperature[i]}C.\nTriggering cooling system.")
             # Insert logic for cooling system here, e.g., HVAC system adjustments
-
-        elif temperature[i] < tau_thr_min:
-            print(f"Device {device} below min temp: {temperature[i]}C.\nTriggering heating system.")
+            # temperature[i] += -alpha * 1.1  #cooling effect
+            # switch 03 -- sits in a rack where the fan is faulty meaning the cooling is not effective
+            
+        #elif temperature[i] < tau_thr_min:
+         #   print(f"Device {device} below min temp: {temperature[i]}C.\nTriggering heating system.")
             # Insert logic for heating system here, e.g., turning on heaters
 
         else:
@@ -140,8 +142,8 @@ if __name__ == "__main__":
     
 
     # Set the number of iterations (e.g., how many times to fetch data, 1 fetch per minute)
-    num_iterations = 10
-    interval = 10  # Interval between checks in seconds
+    num_iterations = 1000      #
+    interval = 1               # Interval between checks in seconds
     
     #Calling the temperature module function
     latest_device_statistics, exceeded_device_stats, temp_values, historical_data = temperature_module()

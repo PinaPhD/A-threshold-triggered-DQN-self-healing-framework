@@ -8,13 +8,14 @@
 '''
 
 
+#import os
+#from time import strftime
+
 import requests
 import time
 import logging
 import pandas as pd
-#from time import strftime
 from datetime import datetime
-#import os
 import json  # Import JSON module to convert dict to string
 import mysql.connector
 from mysql.connector import Error
