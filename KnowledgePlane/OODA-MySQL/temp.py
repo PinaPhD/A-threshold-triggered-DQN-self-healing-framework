@@ -64,6 +64,24 @@ def check_switch_utilization(switch_util):
 
     return exceeded_devices[['timestamp', 'device', 'total_bytesReceived', 'utilization_percentage']]
 
+# Modeling hotspot temperature based on switch utilization
+def compute_hotspot_temperature(utilization):
+    base_temp = 25  # Base temperature for idle or low utilization
+    max_temp_rise = 2.5  # Maximum temperature rise due to high utilization
+    utilization_percentage = (utilization-100) / 100  # Normalize to a percentage
+    
+    # Linearly increasing temperature based on utilization
+    hotspot_temp = base_temp + (max_temp_rise * utilization_percentage)
+    
+    return hotspot_temp
+
+# Incorporating multiple sensors in the temperature model
+def aggregate_temperature(inlet_temp, outlet_temp, power_temp, hotspot_temp):
+    # Using a weighted average for aggregate temperature
+    aggregate_temp = (0.2 * inlet_temp) + (0.2 * outlet_temp) + (0.3 * power_temp) + (0.3 * hotspot_temp)
+    return aggregate_temp
+
+
 # Function to check switch temperature and manage cooling/heating systems
 def manage_temperature_and_traffic(switch_util, temp_init, switch_temp):
     temperature = np.array(temp_init)   #Initializes the switch temperature
