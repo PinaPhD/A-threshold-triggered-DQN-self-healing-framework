@@ -21,6 +21,21 @@ temp_init = {}    # Store initial temperature for each device
 exceeded_devices_set = set()  # Track devices that exceeded the threshold
 exceeded_devices_timestamps = []  # Track exceeded device timestamps and temperatures
 
+#Switch sensor readings -- Industrial-grade equipment temperature ranges between (-40 deg.c to 85 deg.c)
+inlet_temp_sensor = float(np.random.uniform(-10,35,1))   
+outlet_temp_sensor =  float(np.random.uniform(-10,35,1))  
+cpu_temp_sensor =  float(np.random.uniform(-10,35,1))  
+psu_temp_sensor =  float(np.random.uniform(-10,35,1)) 
+ambient_temp_sensor = float(np.random.uniform(15,32,1))
+
+#Assigning weights to these sensors so as to determine their importance in the aggregate temperature value 
+w_inlet = 0.10
+w_outlet = 0.10
+w_cpu = 0.30
+w_psu = 0.20
+w_asic = 0.30
+w_amb = 0.10
+
 
 # Function to fetch the latest values from the view
 def fetch_latest_device_statistics():
@@ -64,7 +79,13 @@ def manage_temperature_and_traffic(switch_util, switch_temp, temp_init):
             temp_init[device] = 18  # Set the initial temperature for each device
 
         # Compute the new temperature based on utilization
-        temp_init[device] += alpha * (utilization * 100) 
+        temp_init[device] = (
+        (w_inlet * inlet_temp_sensor) +
+        (w_outlet * outlet_temp_sensor) +
+        (w_cpu * cpu_temp_sensor) +
+        (w_psu * psu_temp_sensor) + (w_asic * (utilization * 100)) + (w_amb * ambient_temp_sensor)
+    ) / (w_inlet + w_outlet + w_cpu + w_psu + w_asic + w_amb)
+         
 
         # Store the timestamp, device, and updated temperature
         if device not in switch_temp:
@@ -133,7 +154,10 @@ if __name__ == "__main__":
                 current_temp = latest_temp_data['temperature']
                 timestamp = latest_temp_data['timestamp']
 
-                # Cooling system logic
+                '''
+                    Cooling mechanism
+                    Source: https://www.amcoenclosures.com/the-importance-of-cooling-network-switches/
+                '''
                 if current_temp > tau_thr_max:
                     print(f"Device {device} exceeds max temp: {current_temp}C. Cooling system activated.")
                     # Apply cooling effect
@@ -155,6 +179,25 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         # When interrupted, plot the overall time series and overlay exceeding points
         print("KeyboardInterrupt received. Plotting temperature data with exceeded thresholds...")
+        
+        # Flatten the dictionary into a list of rows
+        data = []
+        for device, records in switch_temp.items():
+            for record in records:
+                data.append({
+                    'device': device,
+                    'timestamp': record['timestamp'],
+                    'temperature': record['temperature']
+                })
+
+        # Convert the list of rows into a pandas DataFrame
+        df = pd.DataFrame(data)
+        
+        # Write the DataFrame to a CSV file
+        df.to_csv('switch_temp.csv', index=False)
+        
+        print("Data has been written to switch_temp.csv")
+
         if exceeded_devices_timestamps:
             plot_temperature_with_exceeding_devices(switch_temp, exceeded_devices_timestamps)
         else:
