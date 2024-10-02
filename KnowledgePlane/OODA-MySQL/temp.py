@@ -22,20 +22,23 @@ temp_init = {}    # Store initial temperature for each device
 exceeded_devices_set = set()  # Track devices that exceeded the threshold
 exceeded_devices_timestamps = []  # Track exceeded device timestamps and temperatures
 
-# Switch sensor readings -- Industrial-grade equipment temperature ranges between (-40°C to 85°C)
-inlet_temp_sensor = float(np.random.uniform(15, 25, 1))   
-outlet_temp_sensor = float(np.random.uniform(25, 35, 1))  
-cpu_temp_sensor = float(np.random.uniform(35, 55, 1))  
-psu_temp_sensor = float(np.random.uniform(20, 30, 1)) 
-ambient_temp_sensor = float(np.random.uniform(-5, 35, 1))
+# Function to simulate sensor temperature readings (updated every loop)
+def simulate_temperature_readings():
+    return {
+        'inlet_temp_sensor': float(np.random.uniform(15, 25, 1)),
+        'outlet_temp_sensor': float(np.random.uniform(25, 35, 1)),
+        'cpu_temp_sensor': float(np.random.uniform(35, 55, 1)),
+        'psu_temp_sensor': float(np.random.uniform(20, 30, 1)),
+        'ambient_temp_sensor': float(np.random.uniform(-5, 35, 1))
+    }
 
 # Assigning weights to these sensors so as to determine their importance in the aggregate temperature value 
 w_inlet = 0.050
 w_outlet = 0.050
 w_cpu = 0.045
 w_psu = 0.025
-w_asic = 0.58
-w_amb = 0.25
+w_asic = 0.585
+w_amb = 0.095
 
 # Function to fetch the latest values from the view
 def fetch_latest_device_statistics():
@@ -66,7 +69,7 @@ def check_switch_utilization(switch_util):
     return exceeded_devices[['timestamp', 'device', 'total_bytesReceived', 'utilization_percentage']]
 
 # Function to compute temperature based on utilization
-def manage_temperature_and_traffic(switch_util, switch_temp, temp_init):
+def manage_temperature_and_traffic(switch_util, switch_temp, temp_init, sensor_readings):
     for i, row in switch_util.iterrows():
         device = row['device']
         timestamp = row['timestamp']
@@ -78,12 +81,12 @@ def manage_temperature_and_traffic(switch_util, switch_temp, temp_init):
 
         # Compute the new temperature based on utilization and sensor weights
         temp_init[device] = (
-            (w_inlet * inlet_temp_sensor) +
-            (w_outlet * outlet_temp_sensor) +
-            (w_cpu * cpu_temp_sensor) +
-            (w_psu * psu_temp_sensor) +
+            (w_inlet * sensor_readings['inlet_temp_sensor']) +
+            (w_outlet * sensor_readings['outlet_temp_sensor']) +
+            (w_cpu * sensor_readings['cpu_temp_sensor']) +
+            (w_psu * sensor_readings['psu_temp_sensor']) +
             (w_asic * (utilization * 100)) +
-            (w_amb * ambient_temp_sensor)
+            (w_amb * sensor_readings['ambient_temp_sensor'])
         ) / (w_inlet + w_outlet + w_cpu + w_psu + w_asic + w_amb)
 
         # Store the timestamp, device, and updated temperature
@@ -121,7 +124,8 @@ def temperature_module():
     historical_data = pd.DataFrame()
     latest_device_statistics = fetch_latest_device_statistics()
     exceeded_device_stats = check_switch_utilization(latest_device_statistics)
-    temp_values = manage_temperature_and_traffic(latest_device_statistics, switch_temp, temp_init)
+    sensor_readings = simulate_temperature_readings()  # Get fresh sensor readings
+    temp_values = manage_temperature_and_traffic(latest_device_statistics, switch_temp, temp_init, sensor_readings)
     historical_data = pd.concat([historical_data, exceeded_device_stats])
 
     # Add devices that exceeded thresholds to the set and collect the relevant timestamps
@@ -136,7 +140,7 @@ def temperature_module():
 
 # Main execution loop
 if __name__ == "__main__":
-    interval = 1  # Interval between checks in seconds
+    interval = 2  # Update interval set to 2 seconds
 
     # Open the CSV file and write headers at the start
     with open('switch_temp.csv', mode='w', newline='') as file:
@@ -177,10 +181,8 @@ if __name__ == "__main__":
                         'temperature': current_temp
                     })
 
-                time.sleep(interval)  # Wait for the specified interval (5 seconds)
+                time.sleep(interval)  # Wait for 2 seconds before the next iteration
 
         except KeyboardInterrupt:
             # When interrupted, plot the overall time series and overlay exceeding points
             print("KeyboardInterrupt received. Plotting temperature data with exceeded thresholds...")
-            
-            
