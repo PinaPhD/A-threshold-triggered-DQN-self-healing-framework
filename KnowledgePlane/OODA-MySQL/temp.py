@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
     Created on Tue Sep 05 14:11:18 2024
-    @Main Contributors: León Navarro-Hilfiker and Agrippina Mwangi
+    @Main Contributor: León Navarro-Hilfiker and Agrippina Mwangi
 """
 import mysql.connector
 import pandas as pd
