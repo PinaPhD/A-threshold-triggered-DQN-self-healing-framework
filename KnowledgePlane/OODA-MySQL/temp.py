@@ -113,16 +113,15 @@ def temperature_module():
 
 # Main execution loop
 if __name__ == "__main__":
-    num_iterations = 10  # Number of iterations
+    num_iterations = 1000  # Number of iterations
     interval = 5  # Interval between checks in seconds
 
     for _ in range(num_iterations):
         latest_device_statistics, exceeded_device_stats, temp_values, historical_data = temperature_module()
 
-        # Uncomment below if you want to plot the temperature data after each iteration
-        # if switch_temp:
-        #     plot_temperature_data(switch_temp)
-        # else:
-        #     print("No temperature data recorded during the monitored period.")
+        if switch_temp:
+           plot_temperature_data(switch_temp)
+        else:
+           print("No temperature data recorded during the monitored period.")
 
         time.sleep(interval)  # Wait for the specified interval (5 seconds)
