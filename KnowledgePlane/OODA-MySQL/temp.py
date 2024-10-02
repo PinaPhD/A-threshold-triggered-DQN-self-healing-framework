@@ -23,19 +23,19 @@ exceeded_devices_set = set()  # Track devices that exceeded the threshold
 exceeded_devices_timestamps = []  # Track exceeded device timestamps and temperatures
 
 # Switch sensor readings -- Industrial-grade equipment temperature ranges between (-40°C to 85°C)
-inlet_temp_sensor = float(np.random.uniform(15, 35, 1))   
-outlet_temp_sensor = float(np.random.uniform(10, 35, 1))  
-cpu_temp_sensor = float(np.random.uniform(25, 55, 1))  
-psu_temp_sensor = float(np.random.uniform(20, 65, 1)) 
-ambient_temp_sensor = float(np.random.uniform(-5, 32, 1))
+inlet_temp_sensor = float(np.random.uniform(15, 25, 1))   
+outlet_temp_sensor = float(np.random.uniform(25, 35, 1))  
+cpu_temp_sensor = float(np.random.uniform(35, 55, 1))  
+psu_temp_sensor = float(np.random.uniform(20, 30, 1)) 
+ambient_temp_sensor = float(np.random.uniform(-5, 35, 1))
 
 # Assigning weights to these sensors so as to determine their importance in the aggregate temperature value 
-w_inlet = 0.10
-w_outlet = 0.10
-w_cpu = 0.30
-w_psu = 0.20
-w_asic = 0.30
-w_amb = 0.10
+w_inlet = 0.050
+w_outlet = 0.050
+w_cpu = 0.045
+w_psu = 0.025
+w_asic = 0.58
+w_amb = 0.25
 
 # Function to fetch the latest values from the view
 def fetch_latest_device_statistics():
@@ -136,7 +136,7 @@ def temperature_module():
 
 # Main execution loop
 if __name__ == "__main__":
-    interval = 5  # Interval between checks in seconds
+    interval = 1  # Interval between checks in seconds
 
     # Open the CSV file and write headers at the start
     with open('switch_temp.csv', mode='w', newline='') as file:
