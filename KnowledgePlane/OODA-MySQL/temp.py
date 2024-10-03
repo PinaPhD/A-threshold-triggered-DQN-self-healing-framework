@@ -91,29 +91,7 @@ def manage_temperature_and_traffic(switch_util, switch_temp, temp_init):
 
     return temp_init
 
-# Function to plot overall temperature data and overlay scatter points for exceeded devices
-def plot_temperature_with_exceeding_devices(switch_temp, exceeded_devices_timestamps):
-    plt.figure(figsize=(12, 8))
 
-    # Plot the time series for all devices
-    for device, temp_data in switch_temp.items():
-        timestamps = [entry['timestamp'] for entry in temp_data]
-        temperatures = [entry['temperature'] for entry in temp_data]
-        plt.plot(timestamps, temperatures, label=f'{device} (Time Series)')
-
-    # Overlay the scatter plot for exceeded devices
-    exceeded_timestamps = [entry['timestamp'] for entry in exceeded_devices_timestamps]
-    exceeded_temperatures = [entry['temperature'] for entry in exceeded_devices_timestamps]
-    plt.scatter(exceeded_timestamps, exceeded_temperatures, color='red', label='Threshold Exceeded', zorder=5)
-
-    # Adding labels and title
-    plt.xlabel('Timestamp')
-    plt.ylabel('Temperature (°C)')
-    plt.title('Switch Temperature Over Time with Exceeded Threshold Points')
-    plt.legend()
-    plt.xticks(rotation=45)
-    plt.tight_layout()
-    plt.show()
 
 def temperature_module():
     historical_data = pd.DataFrame()
@@ -135,10 +113,10 @@ def temperature_module():
 
 # Main execution loop
 if __name__ == "__main__":
-    interval = 2  # Update interval set to 2 seconds
+    interval = 1  # Update interval set to 2 seconds
 
     # Open the CSV file and write headers at the start
-    with open('switch_temp_Wednesday.csv', mode='w', newline='') as file:
+    with open('switch_temp_Thursday.csv', mode='w', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=['device', 'timestamp', 'temperature'])
         writer.writeheader()
 
@@ -165,7 +143,7 @@ if __name__ == "__main__":
                         'temperature': current_temp
                     })
 
-                time.sleep(interval)  # Wait for 2 seconds before the next iteration
+                time.sleep(interval)  # Wait for 1 seconds before the next iteration
 
         except KeyboardInterrupt:
             # When interrupted, plot the overall time series and overlay exceeding points
