@@ -147,4 +147,4 @@ if __name__ == "__main__":
 
         except KeyboardInterrupt:
             # When interrupted, plot the overall time series and overlay exceeding points
-            print("KeyboardInterrupt received. Plotting temperature data with exceeded thresholds...")
+            print("KeyboardInterrupt received.")
