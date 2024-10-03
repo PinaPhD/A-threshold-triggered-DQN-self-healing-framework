@@ -13,7 +13,7 @@ import csv
 # Set the threshold for bytes received and temperature limits
 THRESHOLD = 190000000
 alpha = 0.001  # Heat coefficient
-cf = 0.005     # Cooling coefficient
+cf = 0.002     # Cooling coefficient
 tau_thr_max = 27  # Maximum temperature threshold
 tau_thr_min = 18  # Minimum temperature threshold
 
@@ -21,24 +21,6 @@ switch_temp = {}  # Store device temperature values at different timesteps
 temp_init = {}    # Store initial temperature for each device
 exceeded_devices_set = set()  # Track devices that exceeded the threshold
 exceeded_devices_timestamps = []  # Track exceeded device timestamps and temperatures
-
-# Function to simulate sensor temperature readings (updated every loop)
-def simulate_temperature_readings():
-    return {
-        'inlet_temp_sensor': float(np.random.uniform(15, 25, 1)),
-        'outlet_temp_sensor': float(np.random.uniform(25, 35, 1)),
-        'cpu_temp_sensor': float(np.random.uniform(35, 55, 1)),
-        'psu_temp_sensor': float(np.random.uniform(20, 30, 1)),
-        'ambient_temp_sensor': float(np.random.uniform(-5, 35, 1))
-    }
-
-# Assigning weights to these sensors so as to determine their importance in the aggregate temperature value 
-w_inlet = 0.050
-w_outlet = 0.050
-w_cpu = 0.045
-w_psu = 0.025
-w_asic = 0.585
-w_amb = 0.095
 
 # Function to fetch the latest values from the view
 def fetch_latest_device_statistics():
@@ -69,7 +51,7 @@ def check_switch_utilization(switch_util):
     return exceeded_devices[['timestamp', 'device', 'total_bytesReceived', 'utilization_percentage']]
 
 # Function to compute temperature based on utilization
-def manage_temperature_and_traffic(switch_util, switch_temp, temp_init, sensor_readings):
+def manage_temperature_and_traffic(switch_util, switch_temp, temp_init):
     for i, row in switch_util.iterrows():
         device = row['device']
         timestamp = row['timestamp']
@@ -78,21 +60,34 @@ def manage_temperature_and_traffic(switch_util, switch_temp, temp_init, sensor_r
         # Initialize the temperature for the device if not done already
         if device not in temp_init:
             temp_init[device] = 18  # Set the initial temperature for each device
-
-        # Compute the new temperature based on utilization and sensor weights
-        temp_init[device] = (
-            (w_inlet * sensor_readings['inlet_temp_sensor']) +
-            (w_outlet * sensor_readings['outlet_temp_sensor']) +
-            (w_cpu * sensor_readings['cpu_temp_sensor']) +
-            (w_psu * sensor_readings['psu_temp_sensor']) +
-            (w_asic * (utilization * 100)) +
-            (w_amb * sensor_readings['ambient_temp_sensor'])
-        ) / (w_inlet + w_outlet + w_cpu + w_psu + w_asic + w_amb)
-
+        
+        
         # Store the timestamp, device, and updated temperature
         if device not in switch_temp:
             switch_temp[device] = []
         switch_temp[device].append({'timestamp': timestamp, 'temperature': temp_init[device]})
+        
+        
+        # Compute the new temperature based on utilization and sensor weights
+        w_asic = 0.02
+        temp_init[device] += (w_asic * (utilization * 100)) - 0.7   #0.2 - to stabilize temperature
+            
+
+        
+        
+        #Check for violations
+        # Cooling mechanism
+        if temp_init[device] > tau_thr_max:
+            print(f"Device {device} exceeds max temp: {temp_init[device]}C. Cooling system activated.")
+            # Apply cooling effect
+            temp_init[device] -= 2
+
+        elif temp_init[device] < tau_thr_min:
+            print(f"Device {device} below min temp: {temp_init[device]}C. Heating system activated.")
+            temp_init[device] = tau_thr_min  # Restore to the minimum nominal range
+
+        else:
+            print(f"Device {device} is operating within nominal temperature: {temp_init[device]}C.")
 
     return temp_init
 
@@ -124,8 +119,8 @@ def temperature_module():
     historical_data = pd.DataFrame()
     latest_device_statistics = fetch_latest_device_statistics()
     exceeded_device_stats = check_switch_utilization(latest_device_statistics)
-    sensor_readings = simulate_temperature_readings()  # Get fresh sensor readings
-    temp_values = manage_temperature_and_traffic(latest_device_statistics, switch_temp, temp_init, sensor_readings)
+    #sensor_readings = simulate_temperature_readings()  # Get fresh sensor readings
+    temp_values = manage_temperature_and_traffic(latest_device_statistics, switch_temp, temp_init)
     historical_data = pd.concat([historical_data, exceeded_device_stats])
 
     # Add devices that exceeded thresholds to the set and collect the relevant timestamps
@@ -143,7 +138,7 @@ if __name__ == "__main__":
     interval = 2  # Update interval set to 2 seconds
 
     # Open the CSV file and write headers at the start
-    with open('switch_temp.csv', mode='w', newline='') as file:
+    with open('switch_temp_Wednesday.csv', mode='w', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=['device', 'timestamp', 'temperature'])
         writer.writeheader()
 
@@ -152,24 +147,13 @@ if __name__ == "__main__":
                 latest_device_statistics, exceeded_device_stats, temp_values, historical_data = temperature_module()
 
                 # Now apply the cooling/heating logic based on the current temperature
+                #Here --- read the device and its associated temperature value, check for violations and trigger cooling or heating
                 for device, temp_data in switch_temp.items():
                     latest_temp_data = temp_data[-1]  # Get the latest temperature entry for the device
                     current_temp = latest_temp_data['temperature']
                     timestamp = latest_temp_data['timestamp']
 
-                    # Cooling mechanism
-                    if current_temp > tau_thr_max:
-                        print(f"Device {device} exceeds max temp: {current_temp}C. Cooling system activated.")
-                        # Apply cooling effect
-                        latest_temp_data['temperature'] -= cf * 1000
-
-                    elif current_temp < tau_thr_min:
-                        print(f"Device {device} below min temp: {current_temp}C. Heating system activated.")
-                        latest_temp_data['temperature'] = tau_thr_min  # Restore to the minimum nominal range
-
-                    else:
-                        print(f"Device {device} is operating within nominal temperature: {current_temp}C.")
-
+                   
                     # DQN traffic actions if temperature is unstable
                     if current_temp > tau_thr_max or current_temp < tau_thr_min:
                         print(f"Triggering DQN for traffic rerouting due to temperature instability in device {device}.")
