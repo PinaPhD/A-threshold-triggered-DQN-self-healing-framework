@@ -70,11 +70,8 @@ def manage_temperature_and_traffic(switch_util, switch_temp, temp_init):
         
         # Compute the new temperature based on utilization and sensor weights
         w_asic = 0.02
-        temp_init[device] += (w_asic * (utilization * 100)) - 0.7   #0.2 - to stabilize temperature
-            
+        temp_init[device] += (w_asic * (utilization * 100)) - 0.05   #0.2 - to stabilize temperature
 
-        
-        
         #Check for violations
         # Cooling mechanism
         if temp_init[device] > tau_thr_max:
@@ -84,14 +81,12 @@ def manage_temperature_and_traffic(switch_util, switch_temp, temp_init):
 
         elif temp_init[device] < tau_thr_min:
             print(f"Device {device} below min temp: {temp_init[device]}C. Heating system activated.")
-            temp_init[device] = tau_thr_min+ 0.625  # Restore to the minimum nominal range
+            temp_init[device] = tau_thr_min+ 0.005  # Restore to the minimum nominal range
 
         else:
             print(f"Device {device} is operating within nominal temperature: {temp_init[device]}C.")
 
     return temp_init
-
-
 
 def temperature_module():
     historical_data = pd.DataFrame()
@@ -113,10 +108,10 @@ def temperature_module():
 
 # Main execution loop
 if __name__ == "__main__":
-    interval = 1  # Update interval set to 2 seconds
+    interval = 0.5  # Update interval set to 2 seconds
 
     # Open the CSV file and write headers at the start
-    with open('switch_temp_Thursday.csv', mode='w', newline='') as file:
+    with open('switch_temp_0310_thur.csv', mode='w', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=['device', 'timestamp', 'temperature'])
         writer.writeheader()
 
@@ -143,7 +138,7 @@ if __name__ == "__main__":
                         'temperature': current_temp
                     })
 
-                time.sleep(interval)  # Wait for 1 seconds before the next iteration
+                time.sleep(interval)  # Wait for 1/2 second(s) before the next iteration
 
         except KeyboardInterrupt:
             # When interrupted, plot the overall time series and overlay exceeding points
