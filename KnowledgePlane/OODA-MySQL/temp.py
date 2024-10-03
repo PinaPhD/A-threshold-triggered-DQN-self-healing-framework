@@ -84,7 +84,7 @@ def manage_temperature_and_traffic(switch_util, switch_temp, temp_init):
 
         elif temp_init[device] < tau_thr_min:
             print(f"Device {device} below min temp: {temp_init[device]}C. Heating system activated.")
-            temp_init[device] = tau_thr_min  # Restore to the minimum nominal range
+            temp_init[device] = tau_thr_min+ 0.625  # Restore to the minimum nominal range
 
         else:
             print(f"Device {device} is operating within nominal temperature: {temp_init[device]}C.")
