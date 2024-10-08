@@ -65,19 +65,23 @@ def manage_temperature_and_traffic(switch_util, switch_temp, temp_init):
         # Store the timestamp, device, and updated temperature
         if device not in switch_temp:
             switch_temp[device] = []
-        switch_temp[device].append({'timestamp': timestamp, 'temperature': temp_init[device]})
+        switch_temp[device].append({'timestamp': timestamp, 'temperature': temp_init[device]})  #Read the previous temperature
+        
         
         
         # Compute the new temperature based on utilization and sensor weights
         w_asic = 0.02
+        T_amb = 20
         temp_init[device] += (w_asic * (utilization * 100)) - 0.05   #0.2 - to stabilize temperature
-
+        #temp_init[device] += (w_asic * (utilization * 100)) + 0.025*(T_amb - temp_init[device])
+        
         #Check for violations
         # Cooling mechanism
         if temp_init[device] > tau_thr_max:
             print(f"Device {device} exceeds max temp: {temp_init[device]}C. Cooling system activated.")
             # Apply cooling effect
             temp_init[device] -= 2
+            #temp_init[device] += (w_asic * (utilization * 100)) + 0.1*(T_amb - temp_init[device])
 
         elif temp_init[device] < tau_thr_min:
             print(f"Device {device} below min temp: {temp_init[device]}C. Heating system activated.")
@@ -108,10 +112,10 @@ def temperature_module():
 
 # Main execution loop
 if __name__ == "__main__":
-    interval = 0.5  # Update interval set to 2 seconds
+    interval = 0.2                     # Update interval set to 0.2 seconds
 
     # Open the CSV file and write headers at the start
-    with open('switch_temp_0310_thur.csv', mode='w', newline='') as file:
+    with open('switch_temp_afternoon_4pm.csv', mode='w', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=['device', 'timestamp', 'temperature'])
         writer.writeheader()
 
@@ -138,7 +142,7 @@ if __name__ == "__main__":
                         'temperature': current_temp
                     })
 
-                time.sleep(interval)  # Wait for 1/2 second(s) before the next iteration
+                time.sleep(interval)  # Wait for 0.2 second(s) before the next iteration
 
         except KeyboardInterrupt:
             # When interrupted, plot the overall time series and overlay exceeding points

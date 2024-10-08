@@ -617,7 +617,7 @@ if __name__ == "__main__":
                 
                 
                 # Send data samples every second -- before the next iteration
-                time.sleep(10)
+                time.sleep(2)   #Every 2 seconds 
             
     except KeyboardInterrupt:
         
