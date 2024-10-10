@@ -112,7 +112,7 @@ def temperature_module():
 
 # Main execution loop
 if __name__ == "__main__":
-    interval = 0.2                     # Update interval set to 0.2 seconds
+    interval = 2                    # Update interval set to 2 seconds
 
     # Open the CSV file and write headers at the start
     with open('switch_temp_afternoon_4pm.csv', mode='w', newline='') as file:
