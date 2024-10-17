@@ -63,8 +63,8 @@ Alternatively, get a physical server and proceed from step 2.
 - To monitor network performance, use the [iperf3](https://iperf.fr/) tool for active measurements of network latency, throughput, jitter, packet loss (loss of datagrams).
 
 ## Temperature Module
-- 
-
+- A temperature module was designed to generate temperature profiles for the data plane network topology switches using a linear approach. This is because, the Mininet emulator does not capture the temperature profiles of the virtual Openflow switches. 
+- For this setup, the temperature module was designed as shown in this [source file](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/KnowledgePlane/OODA-MySQL/temp.py).
 
 ## Control Plane Design
 
