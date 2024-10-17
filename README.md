@@ -80,7 +80,7 @@ Alternatively, get a physical server and proceed from step 2.
 
 ## Knowledge Plane Design
 - On one of the VMs, download Anaconda and install the relevant Tensorflow and Keras dependencies in a new environment (_not the base_). 
-- The knowledge plane hosts 4 modules namely: Observe, Orient, Decide, and Act modules. These modules interact with each other exchanging important network performance information derived from the ONOS SDN controller topology manager, statistics manager, and flow rule manager as shown in the top figure.
+- The knowledge plane hosts 4 modules namely: Observe, Orient, Decide, and Act modules. These modules interact with each other exchanging important network performance information derived from the ONOS SDN controller topology manager, statistics manager, and flow rule manager as shown in the [self-healing framework](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/Data/selfheal.png).
 - 
 ## Conclusion
 
