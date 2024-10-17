@@ -72,14 +72,14 @@ Alternatively, get a physical server and proceed from step 2.
     - org.onosproject.fwd
     - org.onosproject.openflow
     - org.onosproject.cpman
+    - org.onosproject.metrics
 
-See more information on ONOS features and subsystems [here](https://wiki.onosproject.org/display/ONOS/ONOS)
+- See more information on ONOS features and subsystems [here](https://wiki.onosproject.org/display/ONOS/ONOS)
+- The Knowledge plane interacts with the ONOS SDN Controller [subsystems](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/tree/main/Images/onos-subsystems.png) using RESTFul APIs from the Northbound Interface.
 
----
-![onos subsystems](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/tree/main/Images/onos-subsystems.png)
----
 
 ## Knowledge Plane Design
+
 
 ## Conclusion
 
