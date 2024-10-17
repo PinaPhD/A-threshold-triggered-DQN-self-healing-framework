@@ -5,10 +5,18 @@
 ![Self healing framework](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/Data/selfheal.png)
 ---
 
+### Table of Contents
+1. [Executive Summary](#summary)
+2. [Pre-requisites](#requirements)
+3. [Data Plane Design](#data-plane-design)
+4. [Control Plane Design](#control-plane-design)
+5. [Knowledge Plane Design](#knowledge-plane-design)
+6. [Conclusion](#conclusion)
+7. [References](#references)
 
----
- Executive Summary
----
+
+
+## Executive Summary
 
 Flash events of benign traffic flows and switch thermal instability are key stochastic disruptions causing intermittent network service interruptions in software-defined Industrial Internet of Things (IIoT-Edge) networks for offshore wind power plants (WPPs). 
 These stochastic disruptions violate the service level agreements and quality of service requirements enforced to ensure high availability and high performance; for reliable transmission of critical, time-sensitive and best-effort data traffic. 
@@ -20,8 +28,18 @@ Further, it was observed that the DQN self-healing agent maintained switch tempe
 These findings highlight the potential of learning algorithms in building the resilience and autonomy of such critical industrial operational technology networks. 
 
 
----
-A threshold-triggered Deep Q-Network self-healing framework
----
+## Pre-requisites
+
+
+## Data Plane Design
+
+## Control Plane Design
+
+## Knowledge Plane Design
+
+## Conclusion
+
+
+## References
 
 
