@@ -76,7 +76,7 @@ Alternatively, get a physical server and proceed from step 2.
 See more information on ONOS features and subsystems [here](https://wiki.onosproject.org/display/ONOS/ONOS)
 
 ---
-![ONOS Subsystems](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/tree/main/Images/onos-subsystems.png)
+![onos subsystems](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/tree/main/Images/onos-subsystems.png)
 ---
 
 ## Knowledge Plane Design
