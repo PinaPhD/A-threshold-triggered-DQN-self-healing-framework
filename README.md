@@ -5,7 +5,8 @@
 ![Self healing framework](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/Data/selfheal.png)
 ---
 
-### Contributors
+## Contributors
+
 1. Agrippina Mwangi (Lead Developer and Researcher) - [LinkedIn](https://dk.linkedin.com/in/agrippina-mwangi-3b512517a)
 2. León Navarro-Hilfiker (OT Security Engineer) -[LinkedIn](https://www.linkedin.com/in/le%C3%B3n-navarro-hilfiker-320979254)
 
@@ -49,10 +50,11 @@ These findings highlight the potential of learning algorithms in building the re
 
 See the [Installation Guide](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/ControlPlane/ONOS.md)
 
-Alternatively, get a physical server and proceed from step 2.
+Alternatively, get a physical server and proceed to step 3.
 
 
 ## Data Plane Design
+
 - On one of the VMs with Mininet Installation run the [network topology](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/DataPlane/topology.py) for an offshore wind farm (reduce model with 20 WTGs communicating with one OSS)
 - At the Mininet prompt, run xterm on select mininet hosts to initialize traffic generation using the following data sets:
     - [MQTT sensor data traffic](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/tree/main/DataPlane/IIoT_ECP_Socket)
@@ -63,11 +65,13 @@ Alternatively, get a physical server and proceed from step 2.
 
 
 ## Temperature Module
+
 - A temperature module was designed to generate temperature profiles for the data plane network topology switches using a linear approach. This is because, the Mininet emulator does not capture the temperature profiles of the virtual Openflow switches. 
 - For this setup, the temperature module was designed as shown in this [source file](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/KnowledgePlane/OODA-MySQL/temp.py).
 
 
 ## Control Plane Design
+
 - On one of the VMs, download the [ONOS ver.2.0.0](https://repo1.maven.org/maven2/org/onosproject/onos-releases/2.0.0/onos-2.0.0.tar.gz) SDN Controller.
 - Create a cluster using the _"org.onosproject.cluster-ha"_ ONOS SDN controller feature.
 - Install the following ONOS features:
@@ -82,6 +86,7 @@ Alternatively, get a physical server and proceed from step 2.
 
 
 ## Knowledge Plane Design
+
 - On one of the VMs, download Anaconda and install the relevant Tensorflow and Keras dependencies in a new environment (_not the base_). 
 - The knowledge plane hosts 4 modules namely: Observe, Orient, Decide, and Act modules. These modules interact with each other exchanging important network performance information derived from the ONOS SDN controller topology manager, statistics manager, and flow rule manager as shown in the [self-healing framework](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/Data/selfheal.png).
 - Detailed descriptions of each module and associated source files:
@@ -92,13 +97,15 @@ Alternatively, get a physical server and proceed from step 2.
     
     
 ## Reach Us
+
 - If you need assistance using this tool, kindly log an issue [here](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/issues) and we will respond within 24hrs maximum waiting time.
 - Also, feel free to contribute to discussion posts and suggest any points of improvement by logging an issue.
 
 
 ## References
 
-Mwangi et al., (n.d.) _"Implementing self-healing autonomous software-defined IIoT-Edge networks in Offshore Wind Power Plants"_ submitted to IEEE Transactions on Network and Service Management (November, 2024) 
+- Mwangi et al., (n.d.) _"Implementing self-healing autonomous software-defined IIoT-Edge networks in Offshore Wind Power Plants"_ submitted to IEEE Transactions on Network and Service Management (November, 2024).
+
 ```{bibliography}
     @article{mwangi2025tnsm,
     title="Implementing self-healing autonomous software-defined IIoT-Edge networks in Offshore Wind Power Plants",
@@ -108,4 +115,5 @@ Mwangi et al., (n.d.) _"Implementing self-healing autonomous software-defined II
     issue="",
     }
 ```
+
 - More studies from us and cite our work: [Reference list](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/References.md)
