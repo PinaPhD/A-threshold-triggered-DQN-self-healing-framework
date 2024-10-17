@@ -30,8 +30,9 @@ These findings highlight the potential of learning algorithms in building the re
 
 ## Pre-requisites
 
-1. Create a microsoft azure account and get a subscription
-2. Create several Linux virtual machines with the following compute and storage specifications: 
+1. Create a microsoft azure account and get a subscription.
+2. Create an Ms-Azure resource group and assign it subnets, a network security group, and Bastion.
+2. Create several Linux virtual machines in this Ms-Azure Resource Group with the following compute and storage specifications: 
     - Linux Ubuntu server 22.04 lts-Gen2 x642
     - 2 vCPUs (16GiB RAM), 128-512GB SSD/HDD
     - Docker ver. 24.0.7
@@ -46,6 +47,7 @@ Alternatively, get a physical server and install the software requirements from 
 
 
 ## Data Plane Design
+One of the 
 
 ## Control Plane Design
 
