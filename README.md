@@ -67,8 +67,15 @@ Alternatively, get a physical server and proceed from step 2.
 
 - On one of the VMs, download the [ONOS ver.2.0.0](https://repo1.maven.org/maven2/org/onosproject/onos-releases/2.0.0/onos-2.0.0.tar.gz) SDN Controller.
 - Create a cluster using the _"org.onosproject.cluster-ha"_ ONOS SDN controller feature.
-- 
+- Install the following ONOS features:
+    - org.onosproject.pipelines.basic
+    - org.onosproject.fwd
+    - org.onosproject.openflow
+    - org.onosproject.cpman
 
+See more information on ONOS features and subsystems [here](https://wiki.onosproject.org/display/ONOS/ONOS)
+
+<img src="https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/tree/main/Images/onos-subsystems.png" alt="Alt text" width="400" height="300">
 
 ## Knowledge Plane Design
 
