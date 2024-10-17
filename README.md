@@ -30,6 +30,16 @@ These findings highlight the potential of learning algorithms in building the re
 
 ## Pre-requisites
 
+1. Create a microsoft azure account and get a subscription
+2. Create several Linux virtual machines with the following compute and storage specifications:
+    a. Linux Ubuntu server 22.04 lts-Gen2 x64
+    b. 2 vCPUs (16GiB RAM), 128-512GB SSD/HDD
+    c. Docker ver. 24.0.7
+    d. Mininet Ver. 2.3.0
+    e. InfluxdB Ver.2.7.10
+    f. Python Ver.3.12.3
+
+Alternatively, get a physical server and install the software requirements from step 2.
 
 ## Data Plane Design
 
