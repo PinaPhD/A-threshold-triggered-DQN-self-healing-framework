@@ -94,7 +94,13 @@ Alternatively, get a physical server and proceed to step 3.
     - Orient Module ([Description](https://pinaphd.github.io/testbed/topic6/topic65/orient.html)) ([Source File](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/KnowledgePlane/OODA-MySQL/Orient_MySQL.py))
     - Decide Module ([Description](https://pinaphd.github.io/testbed/topic6/topic65/decide.html)) ([Source File](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/KnowledgePlane/OODA-MySQL/Decide_MySQL.py))
     - Act Module ([Description](https://pinaphd.github.io/testbed/topic6/topic65/act.html) ) ([Source File](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/KnowledgePlane/OODA-MySQL/Act_MySQL.py))
-    
+   
+   
+The knowledge plane's graphical abstract is as shown below:
+ 
+ ---
+ ![Graphical Abstract](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/Data/Decide-Module.png)
+ ---
     
 ## Reach Us
 
