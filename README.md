@@ -40,7 +40,7 @@ These findings highlight the potential of learning algorithms in building the re
 1. Create a Microsoft Azure (Ms-Azure) account and get a subscription.
 2. Create an Ms-Azure resource group and assign it subnets, a network security group, and Bastion.
 2. Create several Linux virtual machines in this Ms-Azure Resource Group with the following compute and storage specifications: 
-    - Linux Ubuntu server 22.04 lts-Gen2 x642, 2 vCPUs (16GiB RAM), 128-512GB SSD/HDD
+    - Linux Ubuntu server 22.04 lts-Gen2 x64, 2 vCPUs (16GiB RAM), 128-512GB SSD/HDD
     - Docker ver. 24.0.7
     - Mininet Ver. 2.3.0
     - InfluxdB Ver.2.7.10
