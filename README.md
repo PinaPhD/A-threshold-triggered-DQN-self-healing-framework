@@ -10,7 +10,6 @@
 2. León Navarro-Hilfiker (OT Security Engineer) -[LinkedIn](https://www.linkedin.com/in/le%C3%B3n-navarro-hilfiker-320979254)
 
 
-
 ### Table of Contents
 
 1. [Executive Summary](#summary)
@@ -27,7 +26,7 @@
 
 Flash events of benign traffic flows and switch thermal instability are key stochastic disruptions causing intermittent network service interruptions in software-defined Industrial Internet of Things (IIoT-Edge) networks for offshore wind power plants (WPPs). 
 These stochastic disruptions violate the service level agreements and quality of service requirements enforced to ensure high availability and high performance; for reliable transmission of critical, time-sensitive and best-effort data traffic. 
-To mitigate these stochastic disruptions, this paper implements a threshold-triggered Deep Q-Network (DQN) self-healing framework that detects, analyzes, repairs, and adapts network behavior and resources in response to these stochastic disruptions.  
+To mitigate these stochastic disruptions, this study implements a threshold-triggered Deep Q-Network (DQN) self-healing framework that detects, analyzes, repairs, and adapts network behavior and resources in response to these stochastic disruptions.  
 On a Microsoft Azure (Ms-Azure) proof-of-concept testbed, the DQN self-healing framework was trained and tested in software-defined IIoT-Edge networks designed for triple WPP cluster application scenario. 
 The testbed comprised Mininet-emulated super spine-leaf switch network topologies at the data plane, ONOS-based controller clusters at the control plane, and the threshold-triggered DQN self-healing agent in the knowledge plane.
 Simulation results from this testbed demonstrated that this threshold-triggered DQN self-healing agent outperformed the baseline super spine-leaf switch network algorithms by 53.84% for specific test case scenarios representing varied network states. 
@@ -38,7 +37,7 @@ These findings highlight the potential of learning algorithms in building the re
 
 ## Pre-requisites
 
-1. Create a microsoft azure account and get a subscription.
+1. Create a Microsoft Azure (Ms-Azure) account and get a subscription.
 2. Create an Ms-Azure resource group and assign it subnets, a network security group, and Bastion.
 2. Create several Linux virtual machines in this Ms-Azure Resource Group with the following compute and storage specifications: 
     - Linux Ubuntu server 22.04 lts-Gen2 x642
@@ -67,6 +66,9 @@ Alternatively, get a physical server and proceed from step 2.
 ## Control Plane Design
 
 - On one of the VMs, download the [ONOS ver.2.0.0](https://repo1.maven.org/maven2/org/onosproject/onos-releases/2.0.0/onos-2.0.0.tar.gz) SDN Controller.
+- Create a cluster using the _org.onosproject.cluster-ha_ ONOS SDN controller feature.
+- 
+
 
 ## Knowledge Plane Design
 
