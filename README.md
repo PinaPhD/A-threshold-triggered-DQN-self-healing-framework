@@ -86,7 +86,12 @@ Alternatively, get a physical server and proceed to step 3.
 
 
 ## Knowledge Plane Design
-
+The knowledge plane's graphical abstract is as shown below:
+ 
+ ---
+ ![Graphical Abstract](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/Data/Decide_Module.png)
+ ---
+    
 - On one of the VMs, download Anaconda and install the relevant Tensorflow and Keras dependencies in a new environment (_not the base_). 
 - The knowledge plane hosts 4 modules namely: Observe, Orient, Decide, and Act modules. These modules interact with each other exchanging important network performance information derived from the ONOS SDN controller topology manager, statistics manager, and flow rule manager as shown in the [self-healing framework](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/Data/selfheal.png).
 - Detailed descriptions of each module and associated source files:
@@ -96,12 +101,7 @@ Alternatively, get a physical server and proceed to step 3.
     - Act Module ([Description](https://pinaphd.github.io/testbed/topic6/topic65/act.html) ) ([Source File](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/KnowledgePlane/OODA-MySQL/Act_MySQL.py))
    
    
-The knowledge plane's graphical abstract is as shown below:
- 
- ---
- ![Graphical Abstract](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/Data/Decide_Module.png)
- ---
-    
+
 ## Reach Us
 
 - If you need assistance using this tool, kindly log an issue [here](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/issues) and we will respond within 24hrs maximum waiting time.
