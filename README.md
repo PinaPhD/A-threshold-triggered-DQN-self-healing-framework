@@ -15,7 +15,7 @@
 1. [Executive Summary](#summary)
 2. [Pre-requisites](#requirements)
 3. [Data Plane Design](#data-plane-design)
-4. [Temperature Module](#temp-module)
+4. [Temperature Module](#temperature-module)
 4. [Control Plane Design](#control-plane-design)
 5. [Knowledge Plane Design](#knowledge-plane-design)
 6. [Conclusion](#conclusion)
