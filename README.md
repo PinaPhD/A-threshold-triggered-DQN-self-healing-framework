@@ -31,7 +31,7 @@ These findings highlight the potential of learning algorithms in building the re
 ## Pre-requisites
 
 1. Create a microsoft azure account and get a subscription
-2. Create several Linux virtual machines with the following compute and storage specifications: [Installation Guide](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/ControlPlane/ONOS.md)
+2. Create several Linux virtual machines with the following compute and storage specifications: 
     - Linux Ubuntu server 22.04 lts-Gen2 x642
     - 2 vCPUs (16GiB RAM), 128-512GB SSD/HDD
     - Docker ver. 24.0.7
@@ -39,7 +39,10 @@ These findings highlight the potential of learning algorithms in building the re
     - InfluxdB Ver.2.7.10
     - Python Ver.3.12.3
 
+See the [Installation Guide](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/ControlPlane/ONOS.md)
+
 Alternatively, get a physical server and install the software requirements from step 2.
+
 
 
 ## Data Plane Design
