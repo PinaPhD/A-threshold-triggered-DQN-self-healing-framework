@@ -86,9 +86,9 @@ Alternatively, get a physical server and proceed from step 2.
 - The knowledge plane hosts 4 modules namely: Observe, Orient, Decide, and Act modules. These modules interact with each other exchanging important network performance information derived from the ONOS SDN controller topology manager, statistics manager, and flow rule manager as shown in the [self-healing framework](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/Data/selfheal.png).
 - Detailed descriptions of each module and associated source files:
     - Observe module ([Description](https://pinaphd.github.io/testbed/topic6/topic65/observe.html)) ([Source File](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/KnowledgePlane/OODA-MySQL/Observe.py))
-    - Orient Module ([Description]()) ([Source File](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/KnowledgePlane/OODA-MySQL/Orient_MySQL.py))
-    - Decide Module ([Description]()) ([Source File](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/KnowledgePlane/OODA-MySQL/Decide_MySQL.py))
-    - Act Module ([Description]() ) ([Source File](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/KnowledgePlane/OODA-MySQL/Act_MySQL.py))
+    - Orient Module ([Description](https://pinaphd.github.io/testbed/topic6/topic65/orient.html)) ([Source File](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/KnowledgePlane/OODA-MySQL/Orient_MySQL.py))
+    - Decide Module ([Description](https://pinaphd.github.io/testbed/topic6/topic65/decide.html)) ([Source File](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/KnowledgePlane/OODA-MySQL/Decide_MySQL.py))
+    - Act Module ([Description](https://pinaphd.github.io/testbed/topic6/topic65/act.html) ) ([Source File](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/KnowledgePlane/OODA-MySQL/Act_MySQL.py))
     
     
 ## Conclusion
