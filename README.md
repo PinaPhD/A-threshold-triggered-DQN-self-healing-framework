@@ -6,8 +6,8 @@
 ---
 
 #### Contributors
-1. Agrippina Mwangi (Lead Developer and Researcher)
-2. León Navarro-Hilfiker (OT Security Engineer)
+1. Agrippina Mwangi (Lead Developer and Researcher) - [LinkedIn](https://dk.linkedin.com/in/agrippina-mwangi-3b512517a)
+2. León Navarro-Hilfiker (OT Security Engineer) -[LinkedIn](https://www.linkedin.com/in/le%C3%B3n-navarro-hilfiker-320979254)
 
 
 
