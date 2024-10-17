@@ -98,14 +98,14 @@ Alternatively, get a physical server and proceed from step 2.
 
 ## References
 
-Mwangi et al., (n.d.) _"Implementing self-healing autonomous software-defined IIoT-Edge networks in Offshore Wind Power Plants"_ submitted to IEEE Transactions on Network and Service Management (November, 2024)
+Mwangi et al., (n.d.) _"Implementing self-healing autonomous software-defined IIoT-Edge networks in Offshore Wind Power Plants"_ submitted to IEEE Transactions on Network and Service Management (Submitted in November, 2024) *Pending peer review*
 ```{bibliography}
     @article{mwangi2025tnsm,
-    title="to be updated",
+    title="Implementing self-healing autonomous software-defined IIoT-Edge networks in Offshore Wind Power Plants",
     journal="IEEE Transactions on Network and Service Management",
     year="2025",
-    volume=""
+    volume="",
     issue="",
-}
+    }
 ```
 - More studies from us and cite our work: [Reference list](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/References.md)
