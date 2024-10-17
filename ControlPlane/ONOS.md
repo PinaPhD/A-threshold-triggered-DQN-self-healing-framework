@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on April 17 10:01:14 2024
-
-@author: amwangi254
-"""
 
 #### Setting up Ms-Azure Resource Group Proof-of-Concept Testbed
 
