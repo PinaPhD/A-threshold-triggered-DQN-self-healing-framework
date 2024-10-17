@@ -5,6 +5,12 @@
 ![Self healing framework](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/Data/selfheal.png)
 ---
 
+#### Contributors
+1. Agrippina Mwangi (Lead Developer and Researcher)
+2. León Navarro-Hilfiker (OT Security Engineer)
+
+
+
 ### Table of Contents
 1. [Executive Summary](#summary)
 2. [Pre-requisites](#requirements)
@@ -26,6 +32,7 @@ The testbed comprised Mininet-emulated super spine-leaf switch network topologie
 Simulation results from this testbed demonstrated that this threshold-triggered DQN self-healing agent outperformed the baseline super spine-leaf switch network algorithms by 53.84% for specific test case scenarios representing varied network states. 
 Further, it was observed that the DQN self-healing agent maintained switch temperatures within the nominal operating range by activating select external rack fans. 
 These findings highlight the potential of learning algorithms in building the resilience and autonomy of such critical industrial operational technology networks. 
+
 
 
 ## Pre-requisites
