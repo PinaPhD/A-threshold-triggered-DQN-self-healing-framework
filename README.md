@@ -74,16 +74,16 @@ Alternatively, get a physical server and proceed from step 2.
     - org.onosproject.cpman
     - org.onosproject.metrics
 
-- See more information on ONOS features and subsystems [here](https://wiki.onosproject.org/display/ONOS/ONOS)
+- See more information on ONOS features and subsystems [here](https://wiki.onosproject.org/display/ONOS/ONOS).
 - The Knowledge plane interacts with the ONOS SDN Controller [subsystems](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/tree/main/Images/onos-subsystems.png) using RESTFul APIs from the Northbound Interface.
 
 
 ## Knowledge Plane Design
-
+- On one of the VMs, download Anaconda and install the relevant Tensorflow and Keras dependencies in a new environment (_not the base_). 
 
 ## Conclusion
 
 
 ## References
 
-See more studies from us and cite our work: [Reference list](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/References.md)
+- More studies from us and cite our work: [Reference list](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/References.md)
