@@ -99,7 +99,7 @@ Alternatively, get a physical server and proceed to step 3.
 The knowledge plane's graphical abstract is as shown below:
  
  ---
- ![Graphical Abstract](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/Data/Decide-Module.png)
+ ![Graphical Abstract](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/Data/Decide_Module.png)
  ---
     
 ## Reach Us
