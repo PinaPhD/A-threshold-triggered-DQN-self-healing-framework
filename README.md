@@ -23,7 +23,7 @@
 
 
 
-## Executive Summary
+### Executive Summary
 
 Flash events of benign traffic flows and switch thermal instability are key stochastic disruptions causing intermittent network service interruptions in software-defined Industrial Internet of Things (IIoT-Edge) networks for offshore wind power plants (WPPs). 
 These stochastic disruptions violate the service level agreements and quality of service requirements enforced to ensure high availability and high performance; for reliable transmission of critical, time-sensitive and best-effort data traffic. 
@@ -36,7 +36,7 @@ These findings highlight the potential of learning algorithms in building the re
 
 
 
-## Pre-requisites
+### Pre-requisites
 
 1. Create a Microsoft Azure (Ms-Azure) account and get a subscription.
 2. Create an Ms-Azure resource group and assign it subnets, a network security group, and Bastion.
@@ -53,7 +53,7 @@ Alternatively, get a physical server and proceed from step 2.
 
 
 
-## Data Plane Design
+### Data Plane Design
 - On one of the VMs with Mininet Installation run the [network topology](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/DataPlane/topology.py) for an offshore wind farm (reduce model with 20 WTGs communicating with one OSS)
 - At the Mininet prompt, run xterm on select mininet hosts to initialize traffic generation using the following data sets:
     - [MQTT sensor data traffic](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/tree/main/DataPlane/IIoT_ECP_Socket)
@@ -62,11 +62,11 @@ Alternatively, get a physical server and proceed from step 2.
 
 - To monitor network performance, use the [iperf3](https://iperf.fr/) tool for active measurements of network latency, throughput, jitter, packet loss (loss of datagrams).
 
-## Temperature Module
+### Temperature Module
 - 
 
 
-## Control Plane Design
+### Control Plane Design
 
 - On one of the VMs, download the [ONOS ver.2.0.0](https://repo1.maven.org/maven2/org/onosproject/onos-releases/2.0.0/onos-2.0.0.tar.gz) SDN Controller.
 - Create a cluster using the _"org.onosproject.cluster-ha"_ ONOS SDN controller feature.
@@ -81,7 +81,7 @@ Alternatively, get a physical server and proceed from step 2.
 - The Knowledge plane interacts with the ONOS SDN Controller [subsystems](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/tree/main/Images/onos-subsystems.png) using RESTFul APIs from the Northbound Interface.
 
 
-## Knowledge Plane Design
+### Knowledge Plane Design
 - On one of the VMs, download Anaconda and install the relevant Tensorflow and Keras dependencies in a new environment (_not the base_). 
 - The knowledge plane hosts 4 modules namely: Observe, Orient, Decide, and Act modules. These modules interact with each other exchanging important network performance information derived from the ONOS SDN controller topology manager, statistics manager, and flow rule manager as shown in the [self-healing framework](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/Data/selfheal.png).
 - Detailed descriptions of each module and associated source files:
@@ -91,9 +91,9 @@ Alternatively, get a physical server and proceed from step 2.
     - Act Module ([Description]() ) ([Source File](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/KnowledgePlane/OODA-MySQL/Act_MySQL.py))
     
     
-## Conclusion
+### Conclusion
 
 
-## References
+### References
 
 - More studies from us and cite our work: [Reference list](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/References.md)
