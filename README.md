@@ -1,6 +1,5 @@
----
-Implementing self-healing autonomous software-defined OT networks in offshore wind power plants
----
+## Implementing self-healing autonomous software-defined OT networks in offshore wind power plants
+
 
 ---
 ![Self healing framework](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/Data/selfheal.png)
