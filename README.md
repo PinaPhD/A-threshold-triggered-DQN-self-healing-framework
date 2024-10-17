@@ -42,12 +42,19 @@ These findings highlight the potential of learning algorithms in building the re
 
 See the [Installation Guide](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/ControlPlane/ONOS.md)
 
-Alternatively, get a physical server and install the software requirements from step 2.
+Alternatively, get a physical server and proceed from step 2.
 
 
 
 ## Data Plane Design
-One of the 
+- One of the VMs with Mininet Installation run the [network topology](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/DataPlane/topology.py) for an offshore wind farm (reduce model with 20 WTGs communicating with one OSS)
+- At the Mininet prompt, run xterm to initialize traffic generation using the following data sets:
+    - [MQTT sensor data traffic](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/tree/main/DataPlane/IIoT_ECP_Socket)
+    - [IEC61850 SV/GOOSE docker based data traffic](https://github.com/mz-automation/libiec61850)
+    - Ordinary ping tests
+
+- To monitor network performance, use the [iperf3](https://iperf.fr/) tool for active measurements of network latency, throughput, jitter, packet loss (loss of datagrams).
+- 
 
 ## Control Plane Design
 
