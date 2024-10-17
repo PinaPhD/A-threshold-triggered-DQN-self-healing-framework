@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Oct 17 10:02:14 2024
-
-@author: amwangi254
-"""
 
 ---
 Reference Section

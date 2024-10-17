@@ -42,4 +42,4 @@ These findings highlight the potential of learning algorithms in building the re
 
 ## References
 
-
+See more studies from us and cite our work: [Reference list](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/References.md)
