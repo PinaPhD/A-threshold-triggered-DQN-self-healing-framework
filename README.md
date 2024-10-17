@@ -58,7 +58,7 @@ Alternatively, get a physical server and proceed from step 2.
 
 ## Control Plane Design
 
-- On one of the VMs, download the [ONOS](https://repo1.maven.org/maven2/org/onosproject/onos-releases/2.0.0/onos-2.0.0.tar.gz) SDN Controller _Loon_ Ver.2.0.0 
+- On one of the VMs, download the [ONOS ver.2.0.0](https://repo1.maven.org/maven2/org/onosproject/onos-releases/2.0.0/onos-2.0.0.tar.gz) SDN Controller.
 
 ## Knowledge Plane Design
 
