@@ -18,7 +18,7 @@
 4. [Temperature Module](#temperature-module)
 4. [Control Plane Design](#control-plane-design)
 5. [Knowledge Plane Design](#knowledge-plane-design)
-6. [Conclusion](#conclusion)
+6. [Reach Us](#reach-us)
 7. [References](#references)
 
 
@@ -52,7 +52,6 @@ See the [Installation Guide](https://github.com/PinaPhD/A-threshold-triggered-DQ
 Alternatively, get a physical server and proceed from step 2.
 
 
-
 ## Data Plane Design
 - On one of the VMs with Mininet Installation run the [network topology](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/DataPlane/topology.py) for an offshore wind farm (reduce model with 20 WTGs communicating with one OSS)
 - At the Mininet prompt, run xterm on select mininet hosts to initialize traffic generation using the following data sets:
@@ -62,12 +61,13 @@ Alternatively, get a physical server and proceed from step 2.
 
 - To monitor network performance, use the [iperf3](https://iperf.fr/) tool for active measurements of network latency, throughput, jitter, packet loss (loss of datagrams).
 
+
 ## Temperature Module
 - A temperature module was designed to generate temperature profiles for the data plane network topology switches using a linear approach. This is because, the Mininet emulator does not capture the temperature profiles of the virtual Openflow switches. 
 - For this setup, the temperature module was designed as shown in this [source file](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/KnowledgePlane/OODA-MySQL/temp.py).
 
-## Control Plane Design
 
+## Control Plane Design
 - On one of the VMs, download the [ONOS ver.2.0.0](https://repo1.maven.org/maven2/org/onosproject/onos-releases/2.0.0/onos-2.0.0.tar.gz) SDN Controller.
 - Create a cluster using the _"org.onosproject.cluster-ha"_ ONOS SDN controller feature.
 - Install the following ONOS features:
@@ -91,9 +91,21 @@ Alternatively, get a physical server and proceed from step 2.
     - Act Module ([Description](https://pinaphd.github.io/testbed/topic6/topic65/act.html) ) ([Source File](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/KnowledgePlane/OODA-MySQL/Act_MySQL.py))
     
     
-## Conclusion
+## Reach Us
+- If you need assistance using this tool, kindly log an issue [here](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/issues) and we will respond within 24hrs maximum waiting time.
+- Also, feel free to contribute to discussion posts and suggest any points of improvement by logging an issue.
 
 
 ## References
 
+Mwangi et al., (n.d.) _"Implementing self-healing autonomous software-defined IIoT-Edge networks in Offshore Wind Power Plants"_ submitted to IEEE Transactions on Network and Service Management (November, 2024)
+```{bibliography}
+    @article{mwangi2025tnsm,
+    title="to be updated",
+    journal="IEEE Transactions on Network and Service Management",
+    year="2025",
+    volume=""
+    issue="",
+}
+```
 - More studies from us and cite our work: [Reference list](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/References.md)
