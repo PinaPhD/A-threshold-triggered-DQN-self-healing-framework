@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jul 16 21:53:24 2024
+Created on Tue Jul 16 14:01:26 2024
 
 @author: amwangi254
 """
 
-import paho.mqtt.client as mqtt
+# publisher_socket.py
+import socket
 import json
 import time
 import random
 import logging
-import os
 from datetime import datetime
 
 # Setup logging
-log_file = "/home/amwangi254/Documents/jp3/DataPlane/logs/publisher.log"
+log_file = "/tmp/publisher_socket.log"
 logging.basicConfig(filename=log_file, level=logging.INFO, format='%(asctime)s %(message)s')
 
 def generate_sensor_data():
@@ -51,28 +51,24 @@ def generate_sensor_data():
     }
     return data
 
-def should_continue_running():
-    current_date = datetime.now()
-    end_date = datetime(2024, 10, 30)
-    return current_date <= end_date
+server_ip = "10.0.1.31"  # IP Address for the receiving ECP node (e2)
+server_port = 50001  # Socket Port number
 
-broker_address = "10.0.1.20"  # Eclipse Mosquitto MQTT broker (Q1)
-broker_port = 1883  # Default MQTT port
-client = mqtt.Client("Publisher")
+end_date = datetime(2024, 10, 31)
 
 try:
-    client.connect(broker_address, broker_port)
-    logging.info("Connected to the MQTT broker at %s:%d", broker_address, broker_port)
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect((server_ip, server_port))
+    logging.info("Connected to server at %s:%d", server_ip, server_port)
     
-    while should_continue_running():
+    while datetime.now() <= end_date:
         data = generate_sensor_data()
-        client.publish("wind_turbine/data", json.dumps(data))
-        logging.info("Published data: %s", data)
-        time.sleep(2)  # Publish sensor data every 2 seconds
+        client_socket.sendall(json.dumps(data).encode())
+        logging.info("Sent data: %s", data)
+        time.sleep(2)  #Running the script every 2 seconds 
+    logging.info("Reached the end date. stopping the script.")
 except Exception as e:
     logging.error("An error occurred: %s", str(e))
 finally:
-    client.disconnect()
-    logging.info("Disconnected from the MQTT broker")
-
-logging.info("Script stopped running as the date exceeded 30th October 2024")
+    client_socket.close()
+    logging.info("Disconnected from server")
