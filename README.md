@@ -48,7 +48,7 @@ These findings highlight the potential of learning algorithms in building the re
     - InfluxdB Ver.2.7.10
     - Python Ver.3.12.3
 
-See the [Installation Guide](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/ControlPlane/ONOS.md)
+See the [Installation Guide](https://github.com/PinaPhD/A-threshold-triggered-DQN-self-healing-framework/blob/main/ControlPlane/Installation_Guide.md)
 
 Alternatively, get a physical server and proceed to step 3.
 
